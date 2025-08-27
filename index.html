@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MikroTik RouterOS - Backup, Restore, dan Export/Import Konfigurasi</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --accent-color: #06b6d4;
+            --success-color: #059669;
+            --warning-color: #d97706;
+            --danger-color: #dc2626;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #334155;
+            --bg-light: #f8fafc;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: #475569;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Tech Background Pattern */
+        .tech-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -3;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(37, 99, 235, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(220, 38, 38, 0.08) 0%, transparent 50%);
+        }
+
+        .circuit-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            opacity: 0.03;
+            background-image: 
+                linear-gradient(90deg, var(--primary-color) 1px, transparent 1px),
+                linear-gradient(var(--primary-color) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: circuitMove 20s linear infinite;
+        }
+
+        @keyframes circuitMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Floating particles */
+        .tech-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: float linear infinite;
+        }
+
+        @keyframes float {
+            0% { 
+                transform: translateY(100vh) translateX(0px);
+                opacity: 0;
+            }
+            10% { 
+                opacity: 0.6;
+            }
+            90% { 
+                opacity: 0.6;
+            }
+            100% { 
+                transform: translateY(-100px) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 100px 20px 80px;
+            background: linear-gradient(135deg, 
+                rgba(37, 99, 235, 0.1) 0%, 
+                rgba(6, 182, 212, 0.1) 50%, 
+                rgba(5, 150, 105, 0.1) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(37, 99, 235, 0.1),
+                transparent
+            );
+            animation: headerScan 10s linear infinite;
+        }
+
+        @keyframes headerScan {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .main-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color), var(--success-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            text-shadow: 0 0 50px rgba(37, 99, 235, 0.3);
+            animation: titleGlow 4s ease-in-out infinite alternate;
+            position: relative;
+        }
+
+        @keyframes titleGlow {
+            0% { filter: brightness(1); }
+            100% { filter: brightness(1.2); }
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .author-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
+            margin: 0 auto;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            animation: cardFloat 6s ease-in-out infinite alternate;
+        }
+
+        @keyframes cardFloat {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-10px); }
+        }
+
+        .card-header {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--accent-color);
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .author-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            text-align: left;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: var(--primary-color);
+            min-width: 80px;
+            margin-right: 15px;
+        }
+
+        .info-value {
+            color: var(--text-primary);
+            font-weight: 400;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        /* Section styling */
+        .section {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.05) 0%, 
+                rgba(255, 255, 255, 0.02) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+            position: relative;
+            backdrop-filter: blur(20px);
+            transition: all 0.4s ease;
+            animation: sectionSlide 0.8s ease-out;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .section:nth-child(even) {
+            animation: sectionSlideRight 0.8s ease-out;
+        }
+
+        @keyframes sectionSlide {
+            from { transform: translateX(-50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes sectionSlideRight {
+            from { transform: translateX(50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .section:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 12px 48px rgba(37, 99, 235, 0.2);
+            transform: translateY(-8px);
+        }
+
+        .section-title {
+            font-family: 'Inter', sans-serif;
+            color: var(--primary-color);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 30px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 2px;
+        }
+
+        /* Code blocks with typing effect */
+        .code-terminal {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            font-family: 'JetBrains Mono', monospace;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .code-terminal::before {
+            content: '$ mikrotik@router:~';
+            color: var(--success-color);
+            font-weight: 600;
+            display: block;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .code-line {
+            color: var(--text-primary);
+            margin: 8px 0;
+            position: relative;
+            padding-left: 20px;
+            transition: all 0.3s ease;
+            opacity: 0;
+            width: fit-content;
+            font-family: 'JetBrains Mono', monospace;
+            white-space: nowrap;
+        }
+
+        .code-line.typing {
+            opacity: 1;
+            border-right: 2px solid var(--accent-color);
+            animation: blink-cursor 1s infinite;
+        }
+
+        .code-line.typed {
+            opacity: 1;
+            border-right: none;
+        }
+
+        @keyframes blink-cursor {
+            0%, 50% { border-color: var(--accent-color); }
+            51%, 100% { border-color: transparent; }
+        }
+
+        .code-line:hover {
+            background: rgba(37, 99, 235, 0.1);
+            padding-left: 25px;
+            border-radius: 6px;
+        }
+
+        .code-line::before {
+            content: '▶';
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+            font-size: 0.8rem;
+        }
+
+        .comment {
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .string {
+            color: var(--warning-color);
+            font-weight: 400;
+        }
+
+        .keyword {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* Alert boxes */
+        .tech-alert {
+            background: linear-gradient(135deg, 
+                rgba(37, 99, 235, 0.1), 
+                rgba(6, 182, 212, 0.1));
+            border: 1px solid var(--primary-color);
+            border-left: 4px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+            position: relative;
+            animation: alertPulse 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes alertPulse {
+            0% { box-shadow: 0 0 20px rgba(37, 99, 235, 0.2); }
+            100% { box-shadow: 0 0 30px rgba(37, 99, 235, 0.4); }
+        }
+
+        .tech-alert::before {
+            content: '🔧 TEKNOLOGI INFO';
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: var(--bg-primary);
+            color: var(--primary-color);
+            padding: 5px 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 20px;
+            border: 1px solid var(--primary-color);
+        }
+
+        .security-alert {
+            background: linear-gradient(135deg, 
+                rgba(220, 38, 38, 0.1), 
+                rgba(217, 119, 6, 0.1));
+            border: 1px solid var(--danger-color);
+            border-left: 4px solid var(--danger-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+            position: relative;
+            animation: securityBlink 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes securityBlink {
+            0% { border-left-color: var(--danger-color); }
+            100% { border-left-color: var(--warning-color); }
+        }
+
+        .security-alert::before {
+            content: '🛡️ KEAMANAN';
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: var(--bg-primary);
+            color: var(--danger-color);
+            padding: 5px 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 20px;
+            border: 1px solid var(--danger-color);
+        }
+
+        .conclusion-box {
+            background: linear-gradient(135deg, 
+                rgba(5, 150, 105, 0.1), 
+                rgba(37, 99, 235, 0.1));
+            border: 1px solid var(--success-color);
+            border-left: 4px solid var(--success-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+            position: relative;
+            animation: conclusionGlow 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes conclusionGlow {
+            0% { box-shadow: 0 0 20px rgba(5, 150, 105, 0.2); }
+            100% { box-shadow: 0 0 30px rgba(5, 150, 105, 0.4); }
+        }
+
+        .conclusion-box::before {
+            content: '📝 KESIMPULAN';
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: var(--bg-primary);
+            color: var(--success-color);
+            padding: 5px 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 20px;
+            border: 1px solid var(--success-color);
+        }
+
+        /* Bibliography */
+        .bibliography {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.08), 
+                rgba(255, 255, 255, 0.04));
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 60px;
+            backdrop-filter: blur(20px);
+            animation: biblioFade 1.5s ease-out;
+        }
+
+        @keyframes biblioFade {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .bibliography h3 {
+            color: var(--accent-color);
+            font-family: 'Inter', sans-serif;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .bibliography ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .bibliography li {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            position: relative;
+            padding-left: 50px;
+        }
+
+        .bibliography li::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            font-size: 1.2rem;
+        }
+
+        .bibliography li:hover {
+            color: var(--text-primary);
+            transform: translateX(10px);
+            border-color: var(--primary-color);
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(6, 182, 212, 0.05));
+        }
+
+        .bibliography a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            word-break: break-all;
+        }
+
+        .bibliography a:hover {
+            color: var(--accent-color);
+            text-decoration: underline;
+        }
+
+        /* Progress bar */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color), var(--success-color));
+            z-index: 1000;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2.5rem;
+            }
+            
+            .section {
+                padding: 25px 20px;
+                margin: 30px 0;
+            }
+            
+            .container {
+                padding: 40px 15px;
+            }
+
+            .code-terminal {
+                padding: 20px;
+                font-size: 0.9rem;
+            }
+
+            .author-info {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Smooth animations */
+        .fade-in {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Tech Background -->
+<div class="tech-bg"></div>
+<div class="circuit-pattern"></div>
+<div class="tech-particles" id="techParticles"></div>
+
+<!-- Header -->
+<div class="header">
+    <h1 class="main-title">MIKROTIK ROUTEROS</h1>
+    <div class="subtitle">Mengelola Layanan dan Mengamankan Akses ke MikroTik</div>
+    <div class="subtitle">Praktik terbaik untuk keamanan dan manajemen layanan RouterOS</div>
+    
+    <div class="author-card">
+        <div class="card-header">Informasi Penulis</div>
+        <div class="author-info">
+            <div class="info-item">
+                <span class="info-label">Penulis:</span>
+                <span class="info-value">Jovian Ekasakta</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Guru:</span>
+                <span class="info-value">Arief Wahyudin</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Kelas:</span>
+                <span class="info-value">XI TJKT 03</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Sekolah:</span>
+                <span class="info-value">Dwija Bhakti 01 Jombang</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Section 1 -->
+    <div class="section fade-in">
+        <h2 class="section-title">1. MENGELOLA LAYANAN PADA MIKROTIK ROUTEROS</h2>
+        
+        <p>Dari sumber NetworkTik (2024), MikroTik RouterOS memiliki layanan yang secara default selalu diaktifkan. Layanan-layanan tersebut memiliki port yang ditugaskan untuk mereka dan dapat menjadi jalur bagi para peretas untuk menyerang router melalui port tersebut.</p>
+        
+        <p>Oleh karena itu, selalu direkomendasikan untuk menonaktifkan layanan yang tidak penting, dan mengubah nomor port dari layanan yang ingin kita gunakan. Apa saja layanan tersebut, di mana kita dapat menemukannya, dan bagaimana cara memanipulasinya?</p>
+        
+        <p>Untuk melihat layanan yang tersedia pada RouterOS, gunakan perintah berikut:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword">/ip service print</span></div>
+            <div class="code-line comment"># Menampilkan daftar semua layanan yang tersedia</div>
+        </div>
+        
+        <p>Dari sumber System Zone (2021), secara default MikroTik RouterOS mengaktifkan beberapa layanan login untuk mengakses RouterOS untuk tujuan administrasi. Layanan-layanan ini meliputi api, ftp, ssh, telnet, winbox, dan www.</p>
+        
+        <p>Untuk menonaktifkan layanan yang tidak digunakan, gunakan perintah berikut:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword">/ip service disable</span> telnet,ftp</div>
+            <div class="code-line comment"># Menonaktifkan layanan telnet dan ftp</div>
+        </div>
+        
+        <p>Atau dengan menentukan nomor layanan:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword">/ip service disable</span> numbers=1,2</div>
+            <div class="code-line comment"># Menonaktifkan layanan dengan nomor 1 dan 2</div>
+        </div>
+        
+        <div class="security-alert">
+            <p>Dari sumber MikroTik Documentation (2024), RouterOS memiliki opsi bawaan untuk akses manajemen yang mudah ke perangkat jaringan. Layanan tertentu harus dimatikan pada jaringan produksi: MAC-Telnet, MAC-WinBox, dan MAC-Ping:</p>
+            <div class="code-terminal">
+                <div class="code-line"><span class="keyword">/tool mac-server set</span> allowed-interface-list=none</div>
+                <div class="code-line"><span class="keyword">/tool mac-server mac-winbox set</span> allowed-interface-list=none</div>
+                <div class="code-line"><span class="keyword">/tool mac-server ping set</span> enabled=no</div>
+            </div>
+        </div>
+        
+        <p>Dari sumber MikroTik Documentation (2023), meskipun firewall melindungi router dari antarmuka publik, Anda mungkin masih ingin menonaktifkan layanan RouterOS. Sebagian besar alat administratif RouterOS dikonfigurasi di menu /ip service.</p>
+        
+        <p>Untuk mengubah port default layanan dan meningkatkan keamanan:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword">/ip service set</span> ssh port=2222</div>
+            <div class="code-line comment"># Mengubah port SSH dari 22 menjadi 2222</div>
+            <div class="code-line"><span class="keyword">/ip service set</span> www port=8081</div>
+            <div class="code-line comment"># Mengubah port HTTP dari 80 menjadi 8081</div>
+            <div class="code-line"><span class="keyword">/ip service set</span> winbox port=9090</div>
+            <div class="code-line comment"># Mengubah port Winbox dari 8291 menjadi 9090</div>
+        </div>
+
+        <p>Dari sumber MikroTik Documentation (2024), RouterOS mungkin memiliki layanan lain yang diaktifkan (mereka dinonaktifkan dalam konfigurasi RouterOS default). Proxy caching MikroTik, socks, UPnP, dan layanan cloud:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword">/ip proxy set</span> enabled=no</div>
+            <div class="code-line"><span class="keyword">/ip socks set</span> enabled=no</div>
+            <div class="code-line"><span class="keyword">/ip upnp set</span> enabled=no</div>
+            <div class="code-line"><span class="keyword">/ip cloud set</span> ddns-enabled=no update-time=no</div>
+        </div>
+        
+        <div class="tech-alert">
+            <p>Dari sumber System Zone (2021), beberapa administrator MikroTik RouterOS memodifikasi port layanan login dengan port yang tidak digunakan. Namun ini memiliki kerugian karena Anda mungkin lupa nomor port yang dimodifikasi dan tidak dapat masuk ke Router MikroTik sampai mengingat nomor port yang ditetapkan. Lagi pula, sangat mudah bagi peretas untuk menemukan port dan layanan yang dimodifikasi menggunakan beberapa alat penemuan jaringan dan layanan.</p>
+        </div>
+
+        <div class="conclusion-box">
+            <p><strong>Kesimpulan:</strong> Dari 2 pendapat tersebut dapat disimpulkan bahwa mengelola layanan pada MikroTik RouterOS adalah langkah penting dalam mengamankan perangkat. Praktik terbaik meliputi menonaktifkan layanan yang tidak digunakan, mengubah port default untuk layanan yang digunakan, dan membatasi akses ke layanan tersebut. Meskipun mengubah port default dapat memberikan lapisan keamanan tambahan, ini bukanlah solusi lengkap karena port yang dimodifikasi masih dapat ditemukan oleh penyerang menggunakan alat pemindaian.</p>
+        </div>
+    </div>
+
+    <!-- Section 2 -->
+    <div class="section fade-in">
+        <h2 class="section-title">2. MEMBATASI AKSES KE LAYANAN MIKROTIK</h2>
+        
+        <p>Dari sumber System Zone (2021), selalu merupakan praktik yang baik untuk mengaktifkan akses layanan login dari alamat IP tertentu. Jika kita menerapkan akses layanan login berdasarkan alamat IP, peretas dari WAN akan selalu ditolak untuk mengakses layanan login dan karenanya, RouterOS akan lebih aman.</p>
+        
+        <p>Untuk membatasi akses ke layanan berdasarkan alamat IP, gunakan perintah berikut:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword">/ip service set</span> ssh address=192.168.88.0/24</div>
+            <div class="code-line comment"># Membatasi akses SSH hanya dari jaringan 192.168.88.0/24</div>
+            <div class="code-line"><span class="keyword">/ip service set</span> winbox address=192.168.88.0/24,10.0.0.5</div>
+            <div class="code-line comment"># Membatasi akses Winbox dari jaringan 192.168.88.0/24 dan alamat 10.0.0.5</div>
+        </div>
+        
+        <p>Dari sumber LinkedIn (2023), cara lain untuk menambahkan lapisan keamanan adalah dengan membuat pengguna baru untuk penggunaan sehari-hari dan menonaktifkan akun pengguna admin, atau alternatifnya Anda dapat mengubah nama pengguna dari pengguna default dari admin ke nama pengguna kustom. Batasi permukaan serangan dengan mematikan layanan dan port yang tidak digunakan. Layanan seperti ssh, ftp, telnet, dan web dapat digunakan oleh penyerang untuk membrute force Mikrotik Anda.</p>
+        
+        <p>Untuk membuat pengguna baru dengan hak admin dan menonaktifkan pengguna admin default:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword">/user add</span> name=superadmin group=full password=StrongP@ssw0rd</div>
+            <div class="code-line comment"># Membuat pengguna baru dengan hak penuh</div>
+            <div class="code-line"><span class="keyword">/user disable</span> admin</div>
+            <div class="code-line comment"># Menonaktifkan pengguna admin default</div>
+        </div>
+        
+        <div class="security-alert">
+            <p>Dari sumber MikroTik Documentation (2024), mengubah nama pengguna default admin ke nama yang berbeda. Nama kustom membantu melindungi akses ke router Anda jika seseorang memiliki akses langsung ke router Anda. Router MikroTik memerlukan konfigurasi kata sandi, kami sarankan menggunakan alat pembuat kata sandi untuk membuat kata sandi yang aman dan tidak berulang.</p>
+        </div>
+        
+        <p>Dari sumber SIM-Cloud (2023), untuk keamanan yang lebih tinggi, kami merekomendasikan agar Anda masuk ke Mikrotik sebagai pengguna unik. Untuk melakukan ini, buat pengguna baru, tentukan kata sandi untuknya dan tambahkan ke grup dengan hak administrator.</p>
+        
+        <p>Jangan gunakan nama yang umum digunakan seperti 'user', 'guest', 'admin', dll. Jangan gunakan kata sandi seperti '12345', 'qwerty' atau sejenisnya dan jangan gunakan nama pengguna Anda lagi sebagai kata sandi. Kata sandi harus tidak kurang dari 8 karakter dan harus menyertakan huruf kecil dan huruf besar, angka, dan idealnya karakter khusus.</p>
+        
+        <p>Contoh membuat pengguna baru dengan nama dan kata sandi yang kuat:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword">/user add</span> name=johndoe@admin password=C0mpl3x#P4ss group=full</div>
+            <div class="code-line comment"># Membuat pengguna dengan nama unik dan kata sandi kompleks</div>
+        </div>
+
+        <div class="conclusion-box">
+            <p><strong>Kesimpulan:</strong> Dari 3 pendapat tersebut dapat disimpulkan bahwa membatasi akses ke layanan MikroTik adalah strategi penting dalam keamanan jaringan. Ini mencakup membatasi akses layanan berdasarkan alamat IP, membuat pengguna dengan nama unik dan kata sandi yang kuat, serta menonaktifkan pengguna admin default. Dengan membatasi siapa yang dapat mengakses layanan dan dari mana, risiko akses tidak sah ke router dapat dikurangi secara signifikan.</p>
+        </div>
+    </div>
+
+    <!-- Section 3 -->
+    <div class="section fade-in">
+        <h2 class="section-title">3. MENGAMANKAN ROUTER DENGAN ATURAN FIREWALL</h2>
+        
+        <p>Dari sumber Tech@Layer-x (2024), Mengkonfigurasi Firewall MikroTik sangat penting untuk menjaga keamanan dan kinerja jaringan. Aturan firewall yang diatur dengan benar dapat melindungi jaringan Anda dari akses tidak sah dan berbagai ancaman cyber. Panduan ini menguraikan praktik terbaik untuk mengkonfigurasi firewall MikroTik untuk mengoptimalkan keamanan dan efisiensi.</p>
+        
+        <p>Urutan aturan firewall secara signifikan memengaruhi efektivitasnya, karena MikroTik memproses aturan secara berurutan dari atas ke bawah.</p>
+        
+        <p>Berikut adalah contoh aturan firewall dasar untuk mengamankan router MikroTik:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line comment"># Membuat daftar antarmuka</div>
+            <div class="code-line"><span class="keyword">/interface list add</span> name=WAN</div>
+            <div class="code-line"><span class="keyword">/interface list add</span> name=LAN</div>
+            <div class="code-line"><span class="keyword">/interface list member add</span> interface=ether1 list=WAN</div>
+            <div class="code-line"><span class="keyword">/interface list member add</span> interface=ether2 list=LAN</div>
+            
+            <div class="code-line comment"># Aturan firewall input - melindungi router</div>
+            <div class="code-line"><span class="keyword">/ip firewall filter add</span> chain=input connection-state=established,related action=accept comment="Izinkan koneksi established/related"</div>
+            <div class="code-line"><span class="keyword">/ip firewall filter add</span> chain=input in-interface-list=LAN action=accept comment="Izinkan akses dari LAN"</div>
+            <div class="code-line"><span class="keyword">/ip firewall filter add</span> chain=input protocol=icmp action=accept comment="Izinkan ping"</div>
+            <div class="code-line"><span class="keyword">/ip firewall filter add</span> chain=input action=drop comment="Drop semua koneksi masuk lainnya"</div>
+            
+            <div class="code-line comment"># Aturan firewall forward - melindungi jaringan</div>
+            <div class="code-line"><span class="keyword">/ip firewall filter add</span> chain=forward connection-state=established,related action=accept comment="Izinkan koneksi established/related"</div>
+            <div class="code-line"><span class="keyword">/ip firewall filter add</span> chain=forward in-interface-list=LAN action=accept comment="Izinkan akses keluar dari LAN"</div>
+            <div class="code-line"><span class="keyword">/ip firewall filter add</span> chain=forward action=drop comment="Drop semua koneksi forward lainnya"</div>
+        </div>
+        
+        <p>Dari sumber MikroTik Documentation (2024), dari semua yang telah kita pelajari sejauh ini, mari kita coba membangun firewall yang canggih. Dalam contoh pembangunan firewall ini, kita akan mencoba menggunakan sebanyak mungkin fitur firewall untuk mengilustrasikan bagaimana cara kerjanya dan kapan mereka harus digunakan dengan cara yang benar. Sebagian besar penyaringan akan dilakukan dalam firewall RAW, firewall reguler akan berisi hanya satu set aturan dasar untuk menerima koneksi established, related, dan untracked serta menjatuhkan semua yang lain yang tidak berasal dari LAN untuk sepenuhnya melindungi router.</p>
+        
+        <p>Berikut adalah contoh konfigurasi firewall tingkat lanjut menggunakan fitur RAW:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line comment"># Aturan firewall RAW untuk pemfilteran awal</div>
+            <div class="code-line"><span class="keyword">/ip firewall raw add</span> chain=prerouting in-interface-list=WAN protocol=tcp tcp-flags=syn connection-state=new action=drop comment="Anti-Spoofing: Drop Invalid SYN"</div>
+            <div class="code-line"><span class="keyword">/ip firewall raw add</span> chain=prerouting in-interface-list=WAN src-address=192.168.0.0/16 action=drop comment="Anti-Spoofing: Drop private addresses from WAN"</div>
+            <div class="code-line"><span class="keyword">/ip firewall raw add</span> chain=prerouting in-interface-list=WAN src-address=10.0.0.0/8 action=drop comment="Anti-Spoofing: Drop private addresses from WAN"</div>
+            <div class="code-line"><span class="keyword">/ip firewall raw add</span> chain=prerouting in-interface-list=WAN src-address=172.16.0.0/12 action=drop comment="Anti-Spoofing: Drop private addresses from WAN"</div>
+        </div>
+        
+        <div class="security-alert">
+            <p>Dari sumber Manito Networks (2018), koneksi manajemen ke perangkat jaringan harus dibuat menggunakan protokol aman dengan modul kriptografi yang divalidasi FIPS 140-2. Meskipun konfigurasi telah diubah, penyerang masih dapat mencoba masuk dengan kredensial admin default Mikrotik melalui Internet menggunakan SSH atau Winbox dan akan berhasil. Kita akan menonaktifkan akses (input) dari sisi WAN dengan menambahkan beberapa aturan firewall dasar, lalu membuat daftar alamat firewall untuk memblokir Bogons.</p>
+        </div>
+        
+        <p>Kita akan menonaktifkan akses (input) dari sisi WAN dengan menambahkan beberapa aturan firewall dasar, lalu membuat daftar alamat firewall untuk memblokir Bogons. Bogons adalah alamat jaringan yang tidak memiliki urusan untuk diarahkan melalui Internet, dan biasanya tidak diarahkan kecuali jika seseorang mencoba memalsukan lalu lintas dan membuatnya seolah-olah berasal dari jaringan Anda sendiri.</p>
+        
+        <p>Contoh konfigurasi untuk memblokir Bogons:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line comment"># Membuat daftar alamat untuk Bogons</div>
+            <div class="code-line"><span class="keyword">/ip firewall address-list add</span> list=bogons address=0.0.0.0/8 comment="RFC 1700 - IANA reserved"</div>
+            <div class="code-line"><span class="keyword">/ip firewall address-list add</span> list=bogons address=127.0.0.0/8 comment="RFC 1700 - Loopback"</div>
+            <div class="code-line"><span class="keyword">/ip firewall address-list add</span> list=bogons address=224.0.0.0/4 comment="RFC 1700 - Multicast"</div>
+            <div class="code-line"><span class="keyword">/ip firewall address-list add</span> list=bogons address=240.0.0.0/4 comment="RFC 1700 - Reserved"</div>
+            
+            <div class="code-line comment"># Menerapkan filter Bogons</div>
+            <div class="code-line"><span class="keyword">/ip firewall filter add</span> chain=input in-interface-list=WAN src-address-list=bogons action=drop comment="Drop Bogons from WAN"</div>
+            <div class="code-line"><span class="keyword">/ip firewall filter add</span> chain=forward in-interface-list=WAN src-address-list=bogons action=drop comment="Drop Bogons from WAN (Forward)"</div>
+        </div>
+
+        <div class="conclusion-box">
+            <p><strong>Kesimpulan:</strong> Dari 3 pendapat tersebut dapat disimpulkan bahwa mengamankan router MikroTik dengan aturan firewall adalah langkah kritis dalam melindungi infrastruktur jaringan. Pendekatan terbaik adalah menerapkan prinsip "izinkan yang diizinkan" daripada "blokir yang dilarang", dengan fokus pada penyaringan di tingkat RAW untuk efisiensi, memblokir alamat Bogons, dan menerapkan aturan berdasarkan status koneksi. Aturan firewall harus diatur dengan benar sesuai urutan prioritas untuk memastikan keamanan maksimal tanpa mengganggu lalu lintas yang sah.</p>
+        </div>
+    </div>
+
+    <!-- Section 4 -->
+    <div class="section fade-in">
+        <h2 class="section-title">4. PRAKTIK TERBAIK KEAMANAN TAMBAHAN</h2>
+        
+        <p>Dari sumber MikroTik Documentation (2024), langkah-langkah berikut adalah rekomendasi tentang cara melindungi perangkat Anda dengan aturan firewall yang kuat yang sudah dikonfigurasi. Mulailah dengan meningkatkan versi RouterOS Anda. Beberapa rilis lama memiliki kelemahan atau kerentanan tertentu, yang telah diperbaiki. Jaga perangkat Anda tetap up to date, untuk memastikan aman.</p>
+        
+        <p>Perintah untuk memeriksa dan mengupgrade RouterOS:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword">/system package update</span> check-for-updates</div>
+            <div class="code-line comment"># Memeriksa pembaruan</div>
+            <div class="code-line"><span class="keyword">/system package update</span> download</div>
+            <div class="code-line comment"># Mengunduh pembaruan</div>
+            <div class="code-line"><span class="keyword">/system package update</span> install</div>
+            <div class="code-line comment"># Menginstal pembaruan</div>
+        </div>
+        
+        <p>Dari sumber MikroTik Documentation (2024), untuk mencegah akses jarak jauh ke perangkat Anda, ada firewall yang telah dikonfigurasi sebelumnya yang memblokir koneksi WAN (sisi internet). Ini disengaja, jangan hapus aturan ini kecuali Anda benar-benar yakin bahwa koneksi aman. Jika Anda berniat membuka akses jarak jauh ke perangkat Anda, kami merekomendasikan mengamankan koneksi menggunakan Virtual Private Network (VPN) seperti WireGuard.</p>
+        
+        <p>Contoh konfigurasi dasar WireGuard VPN:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line comment"># Membuat interface WireGuard</div>
+            <div class="code-line"><span class="keyword">/interface wireguard add</span> name=wireguard1 listen-port=13231</div>
+            <div class="code-line"><span class="keyword">/interface wireguard</span> print</div>
+            <div class="code-line comment"># Catat private-key dan public-key yang dihasilkan</div>
+            
+            <div class="code-line comment"># Menambahkan peer WireGuard</div>
+            <div class="code-line"><span class="keyword">/interface wireguard peers add</span> interface=wireguard1 public-key="CLIENT_PUBLIC_KEY" allowed-address=10.10.10.2/32</div>
+            
+            <div class="code-line comment"># Menambahkan alamat IP ke interface WireGuard</div>
+            <div class="code-line"><span class="keyword">/ip address add</span> address=10.10.10.1/24 interface=wireguard1</div>
+            
+            <div class="code-line comment"># Mengizinkan koneksi WireGuard melalui firewall</div>
+            <div class="code-line"><span class="keyword">/ip firewall filter add</span> chain=input protocol=udp dst-port=13231 action=accept comment="Allow WireGuard"</div>
+        </div>
+        
+        <p>Dari sumber LinkedIn (2023), penggunaan aturan firewall di Mikrotik menyediakan banyak kustomisasi dan fitur keamanan termasuk: Pemfilteran paket untuk menentukan bagaimana paket harus diproses saat mereka melewati router dan NAT (Network Address Translation) yang memungkinkan alamat pribadi dipetakan ke satu alamat publik atau beberapa alamat.</p>
+        
+        <p>Kegagalan untuk mengatur aturan firewall mengekspos jaringan Anda ke berbagai jenis serangan termasuk DDoS dan akses tidak sah. Mengizinkan semua lalu lintas masuk dan keluar tanpa penyaringan dapat menyebabkan potensi kerentanan keamanan.</p>
+        
+        <p>Konfigurasi NAT untuk jaringan:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line comment"># Konfigurasi NAT untuk akses internet</div>
+            <div class="code-line"><span class="keyword">/ip firewall nat add</span> chain=srcnat out-interface-list=WAN action=masquerade comment="NAT untuk koneksi keluar"</div>
+        </div>
+        
+        <div class="tech-alert">
+            <p>Dari sumber NeuronVM (2025), dalam dunia digital saat ini, keamanan adalah topik penting, dan aturan Firewall adalah garis pertahanan pertama kita; aturan firewall seperti penjaga gerbang yang bekerja untuk menjaga data penting Anda tetap aman, ketika datang ke firewall, router MikroTik dikenal karena menyediakan sistem yang sangat kuat dan sangat dapat disesuaikan. Router MikroTik dikenal karena penuh dengan fitur, dan sebagian besar dari itu berasal dari firewall yang kuat, firewall MikroTik melacak status setiap koneksi, yang memungkinkan Anda membuat keputusan yang lebih cerdas tentang lalu lintas apa yang harus diizinkan dan apa yang harus diblokir.</p>
+        </div>
+        
+        <p>Default Deny adalah prinsip keamanan utama, Default Deny memblokir semua kecuali jika Anda secara khusus mengatakan itu diizinkan; itu membuat jaringan Anda jauh lebih aman, firewall MikroTik sempurna untuk ini, memberi Anda alat untuk membangun fondasi yang aman untuk jaringan Anda.</p>
+        
+        <p>Contoh konfigurasi backup otomatis untuk keamanan:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line comment"># Membuat skrip backup otomatis</div>
+            <div class="code-line"><span class="keyword">/system script add</span> name=auto-backup source={</div>
+            <div class="code-line">:local backupfile ([/system identity get name] . "-" . \</div>
+            <div class="code-line">[:pick [/system clock get date] 4 6] . \</div>
+            <div class="code-line">[:pick [/system clock get date] 0 3] . \</div>
+            <div class="code-line">[:pick [/system clock get date] 7 11] . ".backup")</div>
+            <div class="code-line">/system backup save name=$backupfile</div>
+            <div class="code-line">}</div>
+            
+            <div class="code-line comment"># Menjadwalkan backup mingguan</div>
+            <div class="code-line"><span class="keyword">/system scheduler add</span> name=weekly-backup interval=7d on-event=auto-backup start-time=03:00:00</div>
+        </div>
+
+        <div class="conclusion-box">
+            <p><strong>Kesimpulan:</strong> Dari 3 pendapat tersebut dapat disimpulkan bahwa praktik terbaik keamanan tambahan untuk MikroTik meliputi memperbarui RouterOS secara teratur, menggunakan VPN untuk akses jarak jauh, menerapkan prinsip Default Deny pada firewall, dan melakukan backup konfigurasi secara berkala. Dengan menerapkan pendekatan keamanan berlapis, router MikroTik dapat dilindungi dari berbagai ancaman siber, memastikan integritas dan ketersediaan jaringan.</p>
+        </div>
+    </div>
+
+    <!-- Bibliography -->
+    <div class="bibliography">
+        <h3>DAFTAR PUSTAKA</h3>
+        <ul>
+            <li><strong>LinkedIn.</strong> 2023. <em>Securing Your MikroTik Router: Best Practices and Common Pitfalls</em>. <a href="https://www.linkedin.com/pulse/securing-your-mikrotik-router-best-practices-common" target="_blank">https://www.linkedin.com/pulse/securing-your-mikrotik-router-best-practices-common</a>. Diakses pada 27 Agustus 2025, pukul 08:00 WIB.</li>
+            
+            <li><strong>Manito Networks.</strong> 2018. <em>MikroTik Router Hardening</em>. <a href="https://www.manitonetworks.com/networking/2017/7/25/mikrotik-router-hardening" target="_blank">https://www.manitonetworks.com/networking/2017/7/25/mikrotik-router-hardening</a>. Diakses pada 27 Agustus 2025, pukul 08:15 WIB.</li>
+            
+            <li><strong>MikroTik Documentation.</strong> 2023. <em>First Time Configuration</em>. <a href="https://help.mikrotik.com/docs/spaces/ROS/pages/328151/First+Time+Configuration" target="_blank">https://help.mikrotik.com/docs/spaces/ROS/pages/328151/First+Time+Configuration</a>. Diakses pada 27 Agustus 2025, pukul 08:32 WIB.</li>
+            
+            <li><strong>MikroTik Documentation.</strong> 2024. <em>Securing your router</em>. <a href="https://help.mikrotik.com/docs/spaces/ROS/pages/328353/Securing+your+router" target="_blank">https://help.mikrotik.com/docs/spaces/ROS/pages/328353/Securing+your+router</a>. Diakses pada 27 Agustus 2025, pukul 08:46 WIB.</li>
+            
+            <li><strong>MikroTik Documentation.</strong> 2024. <em>Building Advanced Firewall</em>. <a href="https://help.mikrotik.com/docs/spaces/ROS/pages/328513/Building+Advanced+Firewall" target="_blank">https://help.mikrotik.com/docs/spaces/ROS/pages/328513/Building+Advanced+Firewall</a>. Diakses pada 27 Agustus 2025, pukul 09:03 WIB.</li>
+            
+            <li><strong>NetworkTik.</strong> 2024. <em>MikroTik RouterOS Services Management: A Step-By-Step Tutorial</em>. <a href="https://networktik.com/managing-routeros-services/" target="_blank">https://networktik.com/managing-routeros-services/</a>. Diakses pada 27 Agustus 2025, pukul 09:17 WIB.</li>
+            
+            <li><strong>NeuronVM.</strong> 2025. <em>Top MikroTik Firewall Rules to Secure Your Network</em>. <a href="https://neuronvm.com/blog/mikrotik-firewall-rules/" target="_blank">https://neuronvm.com/blog/mikrotik-firewall-rules/</a>. Diakses pada 27 Agustus 2025, pukul 09:30 WIB.</li>
+            
+            <li><strong>SIM-Cloud.</strong> 2023. <em>Basic configuration system for RouterOS (Mikrotik)</em>. <a href="https://docs.sim-cloud.net/en/solutions-virtual-router/mikrotik/basic-setting.html" target="_blank">https://docs.sim-cloud.net/en/solutions-virtual-router/mikrotik/basic-setting.html</a>. Diakses pada 27 Agustus 2025, pukul 09:45 WIB.</li>
+            
+            <li><strong>System Zone.</strong> 2021. <em>Hardening MikroTik RouterOS by Limiting Login Services</em>. <a href="https://systemzone.net/hardening-mikrotik-routeros-by-limiting-login-services/" target="_blank">https://systemzone.net/hardening-mikrotik-routeros-by-limiting-login-services/</a>. Diakses pada 27 Agustus 2025, pukul 10:00 WIB.</li>
+            
+            <li><strong>Tech@Layer-x.</strong> 2024. <em>Configuring MikroTik Firewall - Best Practices</em>. <a href="https://tech.layer-x.com/configuring-mikrotik-firewall-best-practices/" target="_blank">https://tech.layer-x.com/configuring-mikrotik-firewall-best-practices/</a>. Diakses pada 27 Agustus 2025, pukul 10:15 WIB.</li>
+        </ul>
+    </div>
+</div>
+
+        <!-- Bibliography -->
+        <div class="bibliography">
+            <h3>DAFTAR PUSTAKA</h3>
+            <ul>
+                <li><strong>Indonesia Go Network.</strong> 2022. <em>Panduan Lengkap Backup dan Restore Konfigurasi MikroTik</em>. <a href="https://www.indonesiagonetwork.com/blog/panduan-lengkap-backup-dan-restore-konfigurasi-mikrotik/" target="_blank">https://www.indonesiagonetwork.com/blog/panduan-lengkap-backup-dan-restore-konfigurasi-mikrotik/</a>. Diakses pada 26 Agustus 2025, pukul 08:00 WIB.</li>
+                
+                <li><strong>MikroTik Documentation.</strong> 2023. <em>Configuration Management - RouterOS</em>. <a href="https://help.mikrotik.com/docs/spaces/ROS/pages/328155/Configuration+Management" target="_blank">https://help.mikrotik.com/docs/spaces/ROS/pages/328155/Configuration+Management</a>. Diakses pada 26 Agustus 2025, pukul 08:16 WIB.</li>
+                
+                <li><strong>OperaVPS.</strong> 2025. <em>How to Backup and Restore Mikrotik Configuration via Winbox</em>. <a href="https://operavps.com/docs/backup-restore-mikrotik/" target="_blank">https://operavps.com/docs/backup-restore-mikrotik/</a>. Diakses pada 26 Agustus 2025, pukul 08:31 WIB.</li>
+                
+                <li><strong>ShellHacks.</strong> 2023. <em>MikroTik: Backup & Restore System Configuration</em>. <a href="https://www.shellhacks.com/mikrotik-backup-restore-system-configuration/" target="_blank">https://www.shellhacks.com/mikrotik-backup-restore-system-configuration/</a>. Diakses pada 26 Agustus 2025, pukul 08:46 WIB.</li>
+                
+                <li><strong>Tech@Layer-x.</strong> 2024. <em>How to Back Up and Restore Configuration on MikroTik</em>. <a href="https://tech.layer-x.com/how-to-back-up-and-restore-configuration-on-mikrotik/" target="_blank">https://tech.layer-x.com/how-to-back-up-and-restore-configuration-on-mikrotik/</a>. Diakses pada 26 Agustus 2025, pukul 09:01 WIB.</li>
+                
+                <li><strong>Tutorial Jaringan.</strong> 2017. <em>Cara Export dan Import Konfigurasi Mikrotik</em>. <a href="https://www.tutorialjaringan.com/2017/03/cara-export-dan-import-konfigurasi-mikrotik.html" target="_blank">https://www.tutorialjaringan.com/2017/03/cara-export-dan-import-konfigurasi-mikrotik.html</a>. Diakses pada 26 Agustus 2025, pukul 09:19 WIB.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Tech particles animation
+        function createTechParticles() {
+            const particlesContainer = document.getElementById('techParticles');
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Scroll progress
+        function updateScrollProgress() {
+            const scrollTop = document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrollPercent = (scrollTop / scrollHeight) * 100;
+            document.getElementById('scrollProgress').style.width = scrollPercent + '%';
+        }
+
+        // Typing effect for code lines
+        function typeText(element, text, speed = 30) {
+            return new Promise(resolve => {
+                element.classList.add('typing');
+                let i = 0;
+                element.innerHTML = '';
+                
+                function type() {
+                    if (i < text.length) {
+                        element.innerHTML = text.slice(0, i + 1);
+                        i++;
+                        setTimeout(type, speed);
+                    } else {
+                        element.classList.remove('typing');
+                        element.classList.add('typed');
+                        resolve();
+                    }
+                }
+                type();
+            });
+        }
+
+        // Animate code blocks with typing effect
+        function animateCodeBlocks() {
+            const codeTerminals = document.querySelectorAll('.code-terminal');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const codeLines = entry.target.querySelectorAll('.code-line');
+                        let delay = 0;
+                        
+                        codeLines.forEach((line, index) => {
+                            const originalText = line.innerHTML;
+                            setTimeout(async () => {
+                                await typeText(line, originalText, 20);
+                            }, delay);
+                            delay += 500; // 500ms delay between lines
+                        });
+                        
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.3 });
+
+            codeTerminals.forEach(terminal => {
+                observer.observe(terminal);
+            });
+        }
+
+        // Fade in animation on scroll
+        function animateOnScroll() {
+            const fadeElements = document.querySelectorAll('.fade-in');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animation = 'fadeInUp 0.8s ease-out forwards';
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            fadeElements.forEach(element => {
+                observer.observe(element);
+            });
+        }
+
+        // Code block hover effects
+        function addCodeEffects() {
+            const codeLines = document.querySelectorAll('.code-line');
+            codeLines.forEach(line => {
+                line.addEventListener('mouseenter', () => {
+                    if (line.classList.contains('typed')) {
+                        line.style.transform = 'translateX(5px)';
+                        line.style.background = 'rgba(37, 99, 235, 0.1)';
+                    }
+                });
+                line.addEventListener('mouseleave', () => {
+                    line.style.transform = 'translateX(0)';
+                    line.style.background = 'transparent';
+                });
+            });
+        }
+
+        // Section hover effects
+        function addSectionEffects() {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.addEventListener('mouseenter', () => {
+                    section.style.transform = 'translateY(-8px)';
+                });
+                section.addEventListener('mouseleave', () => {
+                    section.style.transform = 'translateY(0)';
+                });
+            });
+        }
+
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', () => {
+            createTechParticles();
+            animateOnScroll();
+            animateCodeBlocks();
+            addCodeEffects();
+            addSectionEffects();
+            
+            // Scroll events
+            window.addEventListener('scroll', updateScrollProgress);
+            
+            // Smooth scrolling for better UX
+            document.documentElement.style.scrollBehavior = 'smooth';
+        });
+
+        // Add responsive particle count
+        function adjustParticleCount() {
+            const width = window.innerWidth;
+            const particlesContainer = document.getElementById('techParticles');
+            const currentParticles = particlesContainer.children.length;
+            const targetParticles = width < 768 ? 20 : width < 1200 ? 35 : 50;
+            
+            if (currentParticles !== targetParticles) {
+                particlesContainer.innerHTML = '';
+                for (let i = 0; i < targetParticles; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = Math.random() * 100 + 'vw';
+                    particle.style.animationDelay = Math.random() * 20 + 's';
+                    particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                    particlesContainer.appendChild(particle);
+                }
+            }
+        }
+
+        window.addEventListener('resize', adjustParticleCount);
+    </script>
+</body>
+</html>
