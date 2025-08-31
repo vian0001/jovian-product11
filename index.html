@@ -1,1 +1,1672 @@
-<script language=javascript>document.write(unescape('%3C%21DOCTYPE%20html%3E%0A%3Chtml%20lang%3D%22id%22%3E%0A%3Chead%3E%0A%20%20%20%20%3Cmeta%20charset%3D%22UTF-8%22%3E%0A%20%20%20%20%3Cmeta%20name%3D%22viewport%22%20content%3D%22width%3Ddevice-width%2C%20initial-scale%3D1.0%22%3E%0A%20%20%20%20%3Ctitle%3EMikroTik%20RouterOS%20-%20Mengelola%20SERVICE%20dan%20Mengamankan%20Akses%3C/title%3E%0A%0A%3Cstyle%3E%0A@import%20url%28%27https%3A//fonts.googleapis.com/css2%3Ffamily%3DInter%3Awght@300%3B400%3B500%3B600%3B700%26family%3DJetBrains+Mono%3Awght@400%3B500%3B600%26display%3Dswap%27%29%3B%0A%0A/*%20Styling%20untuk%20container%20gambar%20*/%0A.image-container%20%7B%0A%20%20margin%3A%2030px%200%3B%0A%20%20border-radius%3A%2012px%3B%0A%20%20overflow%3A%20hidden%3B%0A%20%20box-shadow%3A%200%2010px%2030px%20rgba%280%2C%200%2C%200%2C%200.3%29%3B%0A%20%20background%3A%20linear-gradient%28135deg%2C%20rgba%28255%2C%20255%2C%20255%2C%200.1%29%2C%20rgba%28255%2C%20255%2C%20255%2C%200.05%29%29%3B%0A%20%20border%3A%201px%20solid%20rgba%28255%2C%20255%2C%20255%2C%200.1%29%3B%0A%20%20transition%3A%20all%200.4s%20ease%3B%0A%20%20max-width%3A%20100%25%3B%0A%20%20position%3A%20relative%3B%0A%7D%0A%0A.image-container%3Ahover%20%7B%0A%20%20transform%3A%20scale%281.02%29%3B%0A%20%20box-shadow%3A%200%2015px%2040px%20rgba%2837%2C%2099%2C%20235%2C%200.4%29%3B%0A%7D%0A%0A.image-container%20img%20%7B%0A%20%20width%3A%20100%25%3B%0A%20%20height%3A%20auto%3B%0A%20%20display%3A%20block%3B%0A%20%20transition%3A%20all%200.4s%20ease%3B%0A%7D%0A%0A.image-container%3Ahover%20img%20%7B%0A%20%20filter%3A%20brightness%281.1%29%3B%0A%7D%0A%0A.image-caption%20%7B%0A%20%20background%3A%20linear-gradient%28to%20top%2C%20rgba%2815%2C%2023%2C%2042%2C%200.9%29%2C%20rgba%2815%2C%2023%2C%2042%2C%200.7%29%2C%20transparent%29%3B%0A%20%20padding%3A%2015px%2020px%3B%0A%20%20color%3A%20var%28--text-primary%29%3B%0A%20%20font-size%3A%200.9rem%3B%0A%20%20position%3A%20absolute%3B%0A%20%20bottom%3A%200%3B%0A%20%20left%3A%200%3B%0A%20%20right%3A%200%3B%0A%20%20transform%3A%20translateY%28100%25%29%3B%0A%20%20transition%3A%20transform%200.3s%20ease%3B%0A%7D%0A%0A.image-container%3Ahover%20.image-caption%20%7B%0A%20%20transform%3A%20translateY%280%29%3B%0A%7D%0A%0A@keyframes%20loadProgress%20%7B%200%25%20%7B%20width%3A%200%25%3B%20%7D%20100%25%20%7B%20width%3A%20100%25%3B%20%7D%20%7D%0A@keyframes%20fadeOut%20%7B%20to%20%7B%20opacity%3A%200%3B%20visibility%3A%20hidden%3B%20%7D%20%7D%0A%7B%0A%20%20%20%20%20%20%20%20margin%3A%200%3B%0A%20%20%20%20%20%20%20%20padding%3A%200%3B%0A%20%20%20%20%20%20%20%20box-sizing%3A%20border-box%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20%3Aroot%20%7B%0A%20%20%20%20%20%20%20%20--primary-color%3A%20%232563eb%3B%0A%20%20%20%20%20%20%20%20--secondary-color%3A%20%231e40af%3B%0A%20%20%20%20%20%20%20%20--accent-color%3A%20%2306b6d4%3B%0A%20%20%20%20%20%20%20%20--success-color%3A%20%23059669%3B%0A%20%20%20%20%20%20%20%20--warning-color%3A%20%23d97706%3B%0A%20%20%20%20%20%20%20%20--danger-color%3A%20%23dc2626%3B%0A%20%20%20%20%20%20%20%20--bg-primary%3A%20%230f172a%3B%0A%20%20%20%20%20%20%20%20--bg-secondary%3A%20%231e293b%3B%0A%20%20%20%20%20%20%20%20--bg-card%3A%20%23334155%3B%0A%20%20%20%20%20%20%20%20--bg-light%3A%20%23f8fafc%3B%0A%20%20%20%20%20%20%20%20--text-primary%3A%20%23f1f5f9%3B%0A%20%20%20%20%20%20%20%20--text-secondary%3A%20%23cbd5e1%3B%0A%20%20%20%20%20%20%20%20--text-muted%3A%20%2394a3b8%3B%0A%20%20%20%20%20%20%20%20--border-color%3A%20%23475569%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20body%20%7B%0A%20%20%20%20%20%20%20%20font-family%3A%20%27Inter%27%2C%20sans-serif%3B%0A%20%20%20%20%20%20%20%20background%3A%20linear-gradient%28135deg%2C%20var%28--bg-primary%29%200%25%2C%20var%28--bg-secondary%29%20100%25%29%3B%0A%20%20%20%20%20%20%20%20color%3A%20var%28--text-primary%29%3B%0A%20%20%20%20%20%20%20%20line-height%3A%201.6%3B%0A%20%20%20%20%20%20%20%20overflow-x%3A%20hidden%3B%0A%20%20%20%20%20%20%20%20position%3A%20relative%3B%0A%20%20%20%20%7D%0A%0A%0A/*%20--------------------%20Variables%20--------------------%20*/%0A%3Aroot%20%7B%0A%20%20%20%20--primary-color%3A%20%232563eb%3B%0A%20%20%20%20--secondary-color%3A%20%231e40af%3B%0A%20%20%20%20--accent-color%3A%20%2306b6d4%3B%0A%20%20%20%20--success-color%3A%20%23059669%3B%0A%20%20%20%20--warning-color%3A%20%23d97706%3B%0A%20%20%20%20--danger-color%3A%20%23dc2626%3B%0A%20%20%20%20--bg-primary%3A%20%230f172a%3B%0A%20%20%20%20--bg-secondary%3A%20%231e293b%3B%0A%20%20%20%20--bg-card%3A%20%23334155%3B%0A%20%20%20%20--bg-light%3A%20%23f8fafc%3B%0A%20%20%20%20--text-primary%3A%20%23f1f5f9%3B%0A%20%20%20%20--text-secondary%3A%20%23cbd5e1%3B%0A%20%20%20%20--text-muted%3A%20%2394a3b8%3B%0A%20%20%20%20--border-color%3A%20%23475569%3B%0A%7D%0A%0A*%20%7B%0A%20%20%20%20margin%3A%200%3B%0A%20%20%20%20padding%3A%200%3B%0A%20%20%20%20box-sizing%3A%20border-box%3B%0A%7D%0A%0Abody%20%7B%0A%20%20%20%20font-family%3A%20%27Inter%27%2C%20sans-serif%3B%0A%20%20%20%20background%3A%20linear-gradient%28135deg%2C%20var%28--bg-primary%29%200%25%2C%20var%28--bg-secondary%29%20100%25%29%3B%0A%20%20%20%20color%3A%20var%28--text-primary%29%3B%0A%20%20%20%20line-height%3A%201.6%3B%0A%20%20%20%20overflow-x%3A%20hidden%3B%0A%20%20%20%20position%3A%20relative%3B%0A%7D%0A%0A/*%20--------------------%20Backgrounds%20%26%20Effects%20--------------------%20*/%0A.tech-bg%20%7B%0A%20%20%20%20position%3A%20fixed%3B%0A%20%20%20%20top%3A%200%3B%0A%20%20%20%20left%3A%200%3B%0A%20%20%20%20width%3A%20100%25%3B%0A%20%20%20%20height%3A%20100%25%3B%0A%20%20%20%20z-index%3A%20-3%3B%0A%20%20%20%20background%3A%20%0A%20%20%20%20%20%20%20%20radial-gradient%28circle%20at%2020%25%2050%25%2C%20rgba%2837%2C%2099%2C%20235%2C%200.1%29%200%25%2C%20transparent%2050%25%29%2C%0A%20%20%20%20%20%20%20%20radial-gradient%28circle%20at%2080%25%2020%25%2C%20rgba%286%2C%20182%2C%20212%2C%200.1%29%200%25%2C%20transparent%2050%25%29%2C%0A%20%20%20%20%20%20%20%20radial-gradient%28circle%20at%2040%25%2080%25%2C%20rgba%28220%2C%2038%2C%2038%2C%200.08%29%200%25%2C%20transparent%2050%25%29%3B%0A%7D%0A%0A.circuit-pattern%20%7B%0A%20%20%20%20position%3A%20fixed%3B%0A%20%20%20%20top%3A%200%3B%0A%20%20%20%20left%3A%200%3B%0A%20%20%20%20width%3A%20100%25%3B%0A%20%20%20%20height%3A%20100%25%3B%0A%20%20%20%20z-index%3A%20-2%3B%0A%20%20%20%20opacity%3A%200.03%3B%0A%20%20%20%20background-image%3A%20%0A%20%20%20%20%20%20%20%20linear-gradient%2890deg%2C%20var%28--primary-color%29%201px%2C%20transparent%201px%29%2C%0A%20%20%20%20%20%20%20%20linear-gradient%28var%28--primary-color%29%201px%2C%20transparent%201px%29%3B%0A%20%20%20%20background-size%3A%2050px%2050px%3B%0A%20%20%20%20animation%3A%20circuitMove%2020s%20linear%20infinite%3B%0A%7D%0A%0A@keyframes%20circuitMove%20%7B%0A%20%20%20%200%25%20%7B%20transform%3A%20translate%280%2C%200%29%3B%20%7D%0A%20%20%20%20100%25%20%7B%20transform%3A%20translate%2850px%2C%2050px%29%3B%20%7D%0A%7D%0A%0A.tech-particles%20%7B%0A%20%20%20%20position%3A%20fixed%3B%0A%20%20%20%20top%3A%200%3B%0A%20%20%20%20left%3A%200%3B%0A%20%20%20%20width%3A%20100%25%3B%0A%20%20%20%20height%3A%20100%25%3B%0A%20%20%20%20z-index%3A%20-1%3B%0A%20%20%20%20overflow%3A%20hidden%3B%0A%7D%0A%0A.particle%20%7B%0A%20%20%20%20position%3A%20absolute%3B%0A%20%20%20%20width%3A%204px%3B%0A%20%20%20%20height%3A%204px%3B%0A%20%20%20%20background%3A%20var%28--accent-color%29%3B%0A%20%20%20%20border-radius%3A%2050%25%3B%0A%20%20%20%20opacity%3A%200.6%3B%0A%20%20%20%20animation%3A%20float%20linear%20infinite%3B%0A%7D%0A%0A@keyframes%20float%20%7B%0A%20%20%20%200%25%20%7B%20%0A%20%20%20%20%20%20%20%20transform%3A%20translateY%28100vh%29%20translateX%280px%29%3B%0A%20%20%20%20%20%20%20%20opacity%3A%200%3B%0A%20%20%20%20%7D%0A%20%20%20%2010%25%20%7B%20%0A%20%20%20%20%20%20%20%20opacity%3A%200.6%3B%0A%20%20%20%20%7D%0A%20%20%20%2090%25%20%7B%20%0A%20%20%20%20%20%20%20%20opacity%3A%200.6%3B%0A%20%20%20%20%7D%0A%20%20%20%20100%25%20%7B%20%0A%20%20%20%20%20%20%20%20transform%3A%20translateY%28-100px%29%20translateX%28100px%29%3B%0A%20%20%20%20%20%20%20%20opacity%3A%200%3B%0A%20%20%20%20%7D%0A%7D%0A%0A/*%20--------------------%20Header%20--------------------%20*/%0A.header%20%7B%0A%20%20%20%20text-align%3A%20center%3B%0A%20%20%20%20padding%3A%20100px%2020px%2080px%3B%0A%20%20%20%20background%3A%20linear-gradient%28135deg%2C%20%0A%20%20%20%20%20%20%20%20rgba%2837%2C%2099%2C%20235%2C%200.1%29%200%25%2C%20%0A%20%20%20%20%20%20%20%20rgba%286%2C%20182%2C%20212%2C%200.1%29%2050%25%2C%20%0A%20%20%20%20%20%20%20%20rgba%285%2C%20150%2C%20105%2C%200.1%29%20100%25%29%3B%0A%20%20%20%20position%3A%20relative%3B%0A%20%20%20%20overflow%3A%20hidden%3B%0A%7D%0A%0A.header%3A%3Abefore%20%7B%0A%20%20%20%20content%3A%20%27%27%3B%0A%20%20%20%20position%3A%20absolute%3B%0A%20%20%20%20top%3A%20-50%25%3B%0A%20%20%20%20left%3A%20-50%25%3B%0A%20%20%20%20width%3A%20200%25%3B%0A%20%20%20%20height%3A%20200%25%3B%0A%20%20%20%20background%3A%20linear-gradient%28%0A%20%20%20%20%20%20%20%2045deg%2C%0A%20%20%20%20%20%20%20%20transparent%2C%0A%20%20%20%20%20%20%20%20rgba%2837%2C%2099%2C%20235%2C%200.1%29%2C%0A%20%20%20%20%20%20%20%20transparent%0A%20%20%20%20%29%3B%0A%20%20%20%20animation%3A%20headerScan%2010s%20linear%20infinite%3B%0A%7D%0A%0A@keyframes%20headerScan%20%7B%0A%20%20%20%200%25%20%7B%20transform%3A%20translateX%28-100%25%29%20translateY%28-100%25%29%20rotate%2845deg%29%3B%20%7D%0A%20%20%20%20100%25%20%7B%20transform%3A%20translateX%28100%25%29%20translateY%28100%25%29%20rotate%2845deg%29%3B%20%7D%0A%7D%0A%0A.main-title%20%7B%0A%20%20%20%20font-family%3A%20%27Inter%27%2C%20sans-serif%3B%0A%20%20%20%20font-size%3A%203.5rem%3B%0A%20%20%20%20font-weight%3A%20700%3B%0A%20%20%20%20background%3A%20linear-gradient%28135deg%2C%20var%28--primary-color%29%2C%20var%28--accent-color%29%2C%20var%28--success-color%29%29%3B%0A%20%20%20%20-webkit-background-clip%3A%20text%3B%0A%20%20%20%20-webkit-text-fill-color%3A%20transparent%3B%0A%20%20%20%20background-clip%3A%20text%3B%0A%20%20%20%20margin-bottom%3A%2020px%3B%0A%20%20%20%20text-shadow%3A%200%200%2050px%20rgba%2837%2C%2099%2C%20235%2C%200.3%29%3B%0A%20%20%20%20animation%3A%20titleGlow%204s%20ease-in-out%20infinite%20alternate%3B%0A%20%20%20%20position%3A%20relative%3B%0A%7D%0A%0A@keyframes%20titleGlow%20%7B%0A%20%20%20%200%25%20%7B%20filter%3A%20brightness%281%29%3B%20%7D%0A%20%20%20%20100%25%20%7B%20filter%3A%20brightness%281.2%29%3B%20%7D%0A%7D%0A%0A.subtitle%20%7B%0A%20%20%20%20font-size%3A%201.3rem%3B%0A%20%20%20%20color%3A%20var%28--text-secondary%29%3B%0A%20%20%20%20margin-bottom%3A%2040px%3B%0A%20%20%20%20font-weight%3A%20300%3B%0A%20%20%20%20letter-spacing%3A%201px%3B%0A%7D%0A%0A.author-card%20%7B%0A%20%20%20%20background%3A%20linear-gradient%28135deg%2C%20rgba%28255%2C%20255%2C%20255%2C%200.1%29%2C%20rgba%28255%2C%20255%2C%20255%2C%200.05%29%29%3B%0A%20%20%20%20border%3A%201px%20solid%20rgba%28255%2C%20255%2C%20255%2C%200.1%29%3B%0A%20%20%20%20border-radius%3A%2020px%3B%0A%20%20%20%20padding%3A%2030px%3B%0A%20%20%20%20max-width%3A%20600px%3B%0A%20%20%20%20margin%3A%200%20auto%3B%0A%20%20%20%20backdrop-filter%3A%20blur%2820px%29%3B%0A%20%20%20%20box-shadow%3A%200%208px%2032px%20rgba%280%2C%200%2C%200%2C%200.3%29%3B%0A%20%20%20%20animation%3A%20cardFloat%206s%20ease-in-out%20infinite%20alternate%3B%0A%7D%0A%0A@keyframes%20cardFloat%20%7B%0A%20%20%20%200%25%20%7B%20transform%3A%20translateY%280px%29%3B%20%7D%0A%20%20%20%20100%25%20%7B%20transform%3A%20translateY%28-10px%29%3B%20%7D%0A%7D%0A%0A.card-header%20%7B%0A%20%20%20%20text-align%3A%20center%3B%0A%20%20%20%20font-size%3A%201.1rem%3B%0A%20%20%20%20color%3A%20var%28--accent-color%29%3B%0A%20%20%20%20margin-bottom%3A%2020px%3B%0A%20%20%20%20font-weight%3A%20600%3B%0A%20%20%20%20text-transform%3A%20uppercase%3B%0A%20%20%20%20letter-spacing%3A%202px%3B%0A%7D%0A%0A.author-info%20%7B%0A%20%20%20%20display%3A%20grid%3B%0A%20%20%20%20grid-template-columns%3A%20repeat%28auto-fit%2C%20minmax%28250px%2C%201fr%29%29%3B%0A%20%20%20%20gap%3A%2015px%3B%0A%20%20%20%20text-align%3A%20left%3B%0A%7D%0A%0A.info-item%20%7B%0A%20%20%20%20display%3A%20flex%3B%0A%20%20%20%20align-items%3A%20center%3B%0A%20%20%20%20padding%3A%2010px%200%3B%0A%7D%0A%0A.info-label%20%7B%0A%20%20%20%20font-weight%3A%20600%3B%0A%20%20%20%20color%3A%20var%28--primary-color%29%3B%0A%20%20%20%20min-width%3A%2080px%3B%0A%20%20%20%20margin-right%3A%2015px%3B%0A%7D%0A%0A.info-value%20%7B%0A%20%20%20%20color%3A%20var%28--text-primary%29%3B%0A%20%20%20%20font-weight%3A%20400%3B%0A%7D%0A%0A/*%20--------------------%20Container%20%26%20Sections%20--------------------%20*/%0A.container%20%7B%0A%20%20%20%20max-width%3A%201200px%3B%0A%20%20%20%20margin%3A%200%20auto%3B%0A%20%20%20%20padding%3A%2060px%2020px%3B%0A%7D%0A%0A.section%20%7B%0A%20%20%20%20background%3A%20linear-gradient%28135deg%2C%20%0A%20%20%20%20%20%20%20%20rgba%28255%2C%20255%2C%20255%2C%200.05%29%200%25%2C%20%0A%20%20%20%20%20%20%20%20rgba%28255%2C%20255%2C%20255%2C%200.02%29%20100%25%29%3B%0A%20%20%20%20border%3A%201px%20solid%20rgba%28255%2C%20255%2C%20255%2C%200.1%29%3B%0A%20%20%20%20border-radius%3A%2020px%3B%0A%20%20%20%20padding%3A%2040px%3B%0A%20%20%20%20margin%3A%2040px%200%3B%0A%20%20%20%20position%3A%20relative%3B%0A%20%20%20%20backdrop-filter%3A%20blur%2820px%29%3B%0A%20%20%20%20transition%3A%20all%200.4s%20ease%3B%0A%20%20%20%20animation%3A%20sectionSlide%200.8s%20ease-out%3B%0A%20%20%20%20box-shadow%3A%200%208px%2032px%20rgba%280%2C%200%2C%200%2C%200.2%29%3B%0A%7D%0A%0A.section%3Anth-child%28even%29%20%7B%0A%20%20%20%20animation%3A%20sectionSlideRight%200.8s%20ease-out%3B%0A%7D%0A%0A@keyframes%20sectionSlide%20%7B%0A%20%20%20%20from%20%7B%20transform%3A%20translateX%28-50px%29%3B%20opacity%3A%200%3B%20%7D%0A%20%20%20%20to%20%7B%20transform%3A%20translateX%280%29%3B%20opacity%3A%201%3B%20%7D%0A%7D%0A%0A@keyframes%20sectionSlideRight%20%7B%0A%20%20%20%20from%20%7B%20transform%3A%20translateX%2850px%29%3B%20opacity%3A%200%3B%20%7D%0A%20%20%20%20to%20%7B%20transform%3A%20translateX%280%29%3B%20opacity%3A%201%3B%20%7D%0A%7D%0A%0A.section%3Ahover%20%7B%0A%20%20%20%20border-color%3A%20var%28--primary-color%29%3B%0A%20%20%20%20box-shadow%3A%200%2012px%2048px%20rgba%2837%2C%2099%2C%20235%2C%200.2%29%3B%0A%20%20%20%20transform%3A%20translateY%28-8px%29%3B%0A%7D%0A%0A.section-title%20%7B%0A%20%20%20%20font-family%3A%20%27Inter%27%2C%20sans-serif%3B%0A%20%20%20%20color%3A%20var%28--primary-color%29%3B%0A%20%20%20%20font-size%3A%202rem%3B%0A%20%20%20%20font-weight%3A%20700%3B%0A%20%20%20%20margin-bottom%3A%2025px%3B%0A%20%20%20%20position%3A%20relative%3B%0A%20%20%20%20padding-left%3A%2030px%3B%0A%7D%0A%0A.section-title%3A%3Abefore%20%7B%0A%20%20%20%20content%3A%20%27%27%3B%0A%20%20%20%20position%3A%20absolute%3B%0A%20%20%20%20left%3A%200%3B%0A%20%20%20%20top%3A%2050%25%3B%0A%20%20%20%20transform%3A%20translateY%28-50%25%29%3B%0A%20%20%20%20width%3A%204px%3B%0A%20%20%20%20height%3A%2030px%3B%0A%20%20%20%20background%3A%20linear-gradient%28135deg%2C%20var%28--primary-color%29%2C%20var%28--accent-color%29%29%3B%0A%20%20%20%20border-radius%3A%202px%3B%0A%7D%0A%0A/*%20--------------------%20Code%20Terminal%20%28FIXED%29%20--------------------%20*/%0A.code-terminal%20%7B%0A%20%20%20%20background%3A%20linear-gradient%28135deg%2C%20%231e293b%2C%20%230f172a%29%3B%0A%20%20%20%20border%3A%201px%20solid%20var%28--border-color%29%3B%0A%20%20%20%20border-radius%3A%2012px%3B%0A%20%20%20%20padding%3A%2025px%3B%0A%20%20%20%20margin%3A%2025px%200%3B%0A%20%20%20%20font-family%3A%20%27JetBrains%20Mono%27%2C%20monospace%3B%0A%20%20%20%20position%3A%20relative%3B%0A%20%20%20%20box-shadow%3A%200%204px%2020px%20rgba%280%2C%200%2C%200%2C%200.3%29%3B%0A%20%20%20%20overflow-x%3A%20auto%3B%20/*%20Allow%20horizontal%20scrolling%20*/%0A%7D%0A%0A.code-terminal%3A%3Abefore%20%7B%0A%20%20%20%20content%3A%20%27%24%20mikrotik@router%3A%7E%27%3B%0A%20%20%20%20color%3A%20var%28--success-color%29%3B%0A%20%20%20%20font-weight%3A%20600%3B%0A%20%20%20%20display%3A%20block%3B%0A%20%20%20%20margin-bottom%3A%2015px%3B%0A%20%20%20%20padding-bottom%3A%2010px%3B%0A%20%20%20%20border-bottom%3A%201px%20solid%20var%28--border-color%29%3B%0A%7D%0A%0A.code-line%20%7B%0A%20%20%20%20color%3A%20var%28--text-primary%29%3B%0A%20%20%20%20margin%3A%208px%200%3B%0A%20%20%20%20position%3A%20relative%3B%0A%20%20%20%20padding-left%3A%2020px%3B%0A%20%20%20%20transition%3A%20all%200.3s%20ease%3B%0A%20%20%20%20opacity%3A%200%3B%0A%20%20%20%20font-family%3A%20%27JetBrains%20Mono%27%2C%20monospace%3B%0A%20%20%20%20white-space%3A%20pre%3B%20/*%20Preserve%20spaces%20and%20don%27t%20wrap%20*/%0A%20%20%20%20display%3A%20block%3B%20/*%20Ensure%20block%20display%20for%20proper%20alignment%20*/%0A%7D%0A%0A.code-line.typing%20%7B%0A%20%20%20%20opacity%3A%201%3B%0A%20%20%20%20border-right%3A%202px%20solid%20var%28--accent-color%29%3B%0A%20%20%20%20animation%3A%20blink-cursor%201s%20infinite%3B%0A%7D%0A%0A.code-line.typed%20%7B%0A%20%20%20%20opacity%3A%201%3B%0A%20%20%20%20border-right%3A%20none%3B%0A%7D%0A%0A@keyframes%20blink-cursor%20%7B%0A%20%20%20%200%25%2C%2050%25%20%7B%20border-color%3A%20var%28--accent-color%29%3B%20%7D%0A%20%20%20%2051%25%2C%20100%25%20%7B%20border-color%3A%20transparent%3B%20%7D%0A%7D%0A%0A.code-line%3Ahover%20%7B%0A%20%20%20%20background%3A%20rgba%2837%2C%2099%2C%20235%2C%200.1%29%3B%0A%20%20%20%20padding-left%3A%2025px%3B%0A%20%20%20%20border-radius%3A%206px%3B%0A%7D%0A%0A.code-line%3A%3Abefore%20%7B%0A%20%20%20%20content%3A%20%27%u25B6%27%3B%0A%20%20%20%20position%3A%20absolute%3B%0A%20%20%20%20left%3A%200%3B%0A%20%20%20%20color%3A%20var%28--accent-color%29%3B%0A%20%20%20%20font-size%3A%200.8rem%3B%0A%7D%0A%0A/*%20Custom%20scrollbar%20for%20code%20terminals%20*/%0A.code-terminal%3A%3A-webkit-scrollbar%20%7B%0A%20%20%20%20height%3A%208px%3B%20/*%20Height%20for%20horizontal%20scrollbar%20*/%0A%20%20%20%20background-color%3A%20rgba%2815%2C%2023%2C%2042%2C%200.5%29%3B%20/*%20Dark%20background%20*/%0A%7D%0A%0A.code-terminal%3A%3A-webkit-scrollbar-thumb%20%7B%0A%20%20%20%20background-color%3A%20var%28--accent-color%29%3B%0A%20%20%20%20border-radius%3A%204px%3B%0A%7D%0A%0A.code-terminal%3A%3A-webkit-scrollbar-thumb%3Ahover%20%7B%0A%20%20%20%20background-color%3A%20var%28--primary-color%29%3B%0A%7D%0A%0A.comment%20%7B%0A%20%20%20%20color%3A%20var%28--text-muted%29%3B%0A%20%20%20%20font-style%3A%20italic%3B%0A%7D%0A%0A.string%20%7B%0A%20%20%20%20color%3A%20var%28--warning-color%29%3B%0A%20%20%20%20font-weight%3A%20400%3B%0A%7D%0A%0A.keyword%20%7B%0A%20%20%20%20color%3A%20var%28--primary-color%29%3B%0A%20%20%20%20font-weight%3A%20600%3B%0A%7D%0A%0A/*%20--------------------%20Alert%20Boxes%20--------------------%20*/%0A.tech-alert%2C%0A.security-alert%2C%0A.conclusion-box%20%7B%0A%20%20%20%20border-radius%3A%2012px%3B%0A%20%20%20%20padding%3A%2025px%3B%0A%20%20%20%20margin%3A%2030px%200%3B%0A%20%20%20%20position%3A%20relative%3B%0A%7D%0A%0A.tech-alert%20%7B%0A%20%20%20%20background%3A%20linear-gradient%28135deg%2C%20%0A%20%20%20%20%20%20%20%20rgba%2837%2C%2099%2C%20235%2C%200.1%29%2C%20%0A%20%20%20%20%20%20%20%20rgba%286%2C%20182%2C%20212%2C%200.1%29%29%3B%0A%20%20%20%20border%3A%201px%20solid%20var%28--primary-color%29%3B%0A%20%20%20%20border-left%3A%204px%20solid%20var%28--primary-color%29%3B%0A%20%20%20%20animation%3A%20alertPulse%203s%20ease-in-out%20infinite%20alternate%3B%0A%7D%0A%0A.tech-alert%3A%3Abefore%20%7B%0A%20%20%20%20content%3A%20%27%uD83D%uDD27%20TEKNOLOGI%20INFO%27%3B%0A%20%20%20%20position%3A%20absolute%3B%0A%20%20%20%20top%3A%20-12px%3B%0A%20%20%20%20left%3A%2020px%3B%0A%20%20%20%20background%3A%20var%28--bg-primary%29%3B%0A%20%20%20%20color%3A%20var%28--primary-color%29%3B%0A%20%20%20%20padding%3A%205px%2015px%3B%0A%20%20%20%20font-size%3A%200.85rem%3B%0A%20%20%20%20font-weight%3A%20600%3B%0A%20%20%20%20border-radius%3A%2020px%3B%0A%20%20%20%20border%3A%201px%20solid%20var%28--primary-color%29%3B%0A%7D%0A%0A.security-alert%20%7B%0A%20%20%20%20background%3A%20linear-gradient%28135deg%2C%20%0A%20%20%20%20%20%20%20%20rgba%28220%2C%2038%2C%2038%2C%200.1%29%2C%20%0A%20%20%20%20%20%20%20%20rgba%28217%2C%20119%2C%206%2C%200.1%29%29%3B%0A%20%20%20%20border%3A%201px%20solid%20var%28--danger-color%29%3B%0A%20%20%20%20border-left%3A%204px%20solid%20var%28--danger-color%29%3B%0A%20%20%20%20animation%3A%20securityBlink%202s%20ease-in-out%20infinite%20alternate%3B%0A%7D%0A%0A.security-alert%3A%3Abefore%20%7B%0A%20%20%20%20content%3A%20%27%uD83D%uDEE1%uFE0F%20KEAMANAN%27%3B%0A%20%20%20%20position%3A%20absolute%3B%0A%20%20%20%20top%3A%20-12px%3B%0A%20%20%20%20left%3A%2020px%3B%0A%20%20%20%20background%3A%20var%28--bg-primary%29%3B%0A%20%20%20%20color%3A%20var%28--danger-color%29%3B%0A%20%20%20%20padding%3A%205px%2015px%3B%0A%20%20%20%20font-size%3A%200.85rem%3B%0A%20%20%20%20font-weight%3A%20600%3B%0A%20%20%20%20border-radius%3A%2020px%3B%0A%20%20%20%20border%3A%201px%20solid%20var%28--danger-color%29%3B%0A%7D%0A%0A.conclusion-box%20%7B%0A%20%20%20%20background%3A%20linear-gradient%28135deg%2C%20%0A%20%20%20%20%20%20%20%20rgba%285%2C%20150%2C%20105%2C%200.1%29%2C%20%0A%20%20%20%20%20%20%20%20rgba%2837%2C%2099%2C%20235%2C%200.1%29%29%3B%0A%20%20%20%20border%3A%201px%20solid%20var%28--success-color%29%3B%0A%20%20%20%20border-left%3A%204px%20solid%20var%28--success-color%29%3B%0A%20%20%20%20animation%3A%20conclusionGlow%204s%20ease-in-out%20infinite%20alternate%3B%0A%7D%0A%0A.conclusion-box%3A%3Abefore%20%7B%0A%20%20%20%20content%3A%20%27%uD83D%uDCDD%20KESIMPULAN%27%3B%0A%20%20%20%20position%3A%20absolute%3B%0A%20%20%20%20top%3A%20-12px%3B%0A%20%20%20%20left%3A%2020px%3B%0A%20%20%20%20background%3A%20var%28--bg-primary%29%3B%0A%20%20%20%20color%3A%20var%28--success-color%29%3B%0A%20%20%20%20padding%3A%205px%2015px%3B%0A%20%20%20%20font-size%3A%200.85rem%3B%0A%20%20%20%20font-weight%3A%20600%3B%0A%20%20%20%20border-radius%3A%2020px%3B%0A%20%20%20%20border%3A%201px%20solid%20var%28--success-color%29%3B%0A%7D%0A%0A@keyframes%20alertPulse%20%7B%0A%20%20%20%200%25%20%7B%20box-shadow%3A%200%200%2020px%20rgba%2837%2C%2099%2C%20235%2C%200.2%29%3B%20%7D%0A%20%20%20%20100%25%20%7B%20box-shadow%3A%200%200%2030px%20rgba%2837%2C%2099%2C%20235%2C%200.4%29%3B%20%7D%0A%7D%0A%0A@keyframes%20securityBlink%20%7B%0A%20%20%20%200%25%20%7B%20border-left-color%3A%20var%28--danger-color%29%3B%20%7D%0A%20%20%20%20100%25%20%7B%20border-left-color%3A%20var%28--warning-color%29%3B%20%7D%0A%7D%0A%0A@keyframes%20conclusionGlow%20%7B%0A%20%20%20%200%25%20%7B%20box-shadow%3A%200%200%2020px%20rgba%285%2C%20150%2C%20105%2C%200.2%29%3B%20%7D%0A%20%20%20%20100%25%20%7B%20box-shadow%3A%200%200%2030px%20rgba%285%2C%20150%2C%20105%2C%200.4%29%3B%20%7D%0A%7D%0A%0A/*%20--------------------%20Bibliography%20--------------------%20*/%0A.bibliography%20%7B%0A%20%20%20%20background%3A%20linear-gradient%28135deg%2C%20%0A%20%20%20%20%20%20%20%20rgba%28255%2C%20255%2C%20255%2C%200.08%29%2C%20%0A%20%20%20%20%20%20%20%20rgba%28255%2C%20255%2C%20255%2C%200.04%29%29%3B%0A%20%20%20%20border%3A%201px%20solid%20rgba%28255%2C%20255%2C%20255%2C%200.15%29%3B%0A%20%20%20%20border-radius%3A%2020px%3B%0A%20%20%20%20padding%3A%2040px%3B%0A%20%20%20%20margin-top%3A%2060px%3B%0A%20%20%20%20backdrop-filter%3A%20blur%2820px%29%3B%0A%20%20%20%20animation%3A%20biblioFade%201.5s%20ease-out%3B%0A%7D%0A%0A@keyframes%20biblioFade%20%7B%0A%20%20%20%20from%20%7B%20opacity%3A%200%3B%20transform%3A%20translateY%2850px%29%3B%20%7D%0A%20%20%20%20to%20%7B%20opacity%3A%201%3B%20transform%3A%20translateY%280%29%3B%20%7D%0A%7D%0A%0A.bibliography%20h3%20%7B%0A%20%20%20%20color%3A%20var%28--accent-color%29%3B%0A%20%20%20%20font-family%3A%20%27Inter%27%2C%20sans-serif%3B%0A%20%20%20%20margin-bottom%3A%2030px%3B%0A%20%20%20%20text-align%3A%20center%3B%0A%20%20%20%20font-size%3A%202rem%3B%0A%20%20%20%20font-weight%3A%20700%3B%0A%7D%0A%0A.bibliography%20ul%20%7B%0A%20%20%20%20list-style%3A%20none%3B%0A%20%20%20%20padding-left%3A%200%3B%0A%7D%0A%0A.bibliography%20li%20%7B%0A%20%20%20%20background%3A%20linear-gradient%28135deg%2C%20rgba%28255%2C%20255%2C%20255%2C%200.03%29%2C%20rgba%28255%2C%20255%2C%20255%2C%200.01%29%29%3B%0A%20%20%20%20border%3A%201px%20solid%20rgba%28255%2C%20255%2C%20255%2C%200.1%29%3B%0A%20%20%20%20border-radius%3A%2010px%3B%0A%20%20%20%20padding%3A%2020px%3B%0A%20%20%20%20margin-bottom%3A%2015px%3B%0A%20%20%20%20line-height%3A%201.8%3B%0A%20%20%20%20color%3A%20var%28--text-secondary%29%3B%0A%20%20%20%20transition%3A%20all%200.3s%20ease%3B%0A%20%20%20%20position%3A%20relative%3B%0A%20%20%20%20padding-left%3A%2050px%3B%0A%7D%0A%0A.bibliography%20li%3Ahover%20%7B%0A%20%20%20%20color%3A%20var%28--text-primary%29%3B%0A%20%20%20%20transform%3A%20translateX%2810px%29%3B%0A%20%20%20%20border-color%3A%20var%28--primary-color%29%3B%0A%20%20%20%20background%3A%20linear-gradient%28135deg%2C%20rgba%2837%2C%2099%2C%20235%2C%200.1%29%2C%20rgba%286%2C%20182%2C%20212%2C%200.05%29%29%3B%0A%7D%0A%0A.bibliography%20a%20%7B%0A%20%20%20%20color%3A%20var%28--primary-color%29%3B%0A%20%20%20%20text-decoration%3A%20none%3B%0A%20%20%20%20transition%3A%20all%200.3s%20ease%3B%0A%20%20%20%20word-break%3A%20break-all%3B%0A%7D%0A%0A.bibliography%20a%3Ahover%20%7B%0A%20%20%20%20color%3A%20var%28--accent-color%29%3B%0A%20%20%20%20text-decoration%3A%20underline%3B%0A%7D%0A%0A/*%20--------------------%20Progress%20bar%20--------------------%20*/%0A.scroll-progress%20%7B%0A%20%20%20%20position%3A%20fixed%3B%0A%20%20%20%20top%3A%200%3B%0A%20%20%20%20left%3A%200%3B%0A%20%20%20%20width%3A%200%25%3B%0A%20%20%20%20height%3A%204px%3B%0A%20%20%20%20background%3A%20linear-gradient%2890deg%2C%20var%28--primary-color%29%2C%20var%28--accent-color%29%2C%20var%28--success-color%29%29%3B%0A%20%20%20%20z-index%3A%201000%3B%0A%20%20%20%20transition%3A%20width%200.3s%20ease%3B%0A%20%20%20%20box-shadow%3A%200%200%2010px%20rgba%2837%2C%2099%2C%20235%2C%200.5%29%3B%0A%7D%0A%0A/*%20--------------------%20Portfolio%20Button%20--------------------%20*/%0A.portfolio-button%20%7B%0A%20%20%20%20position%3A%20fixed%3B%0A%20%20%20%20bottom%3A%2030px%3B%0A%20%20%20%20right%3A%2030px%3B%0A%20%20%20%20z-index%3A%201000%3B%0A%20%20%20%20background%3A%20linear-gradient%28135deg%2C%20var%28--primary-color%29%2C%20var%28--accent-color%29%29%3B%0A%20%20%20%20color%3A%20var%28--text-primary%29%3B%0A%20%20%20%20border%3A%20none%3B%0A%20%20%20%20border-radius%3A%2050px%3B%0A%20%20%20%20padding%3A%2015px%2025px%3B%0A%20%20%20%20font-family%3A%20%27Inter%27%2C%20sans-serif%3B%0A%20%20%20%20font-weight%3A%20600%3B%0A%20%20%20%20font-size%3A%201rem%3B%0A%20%20%20%20cursor%3A%20pointer%3B%0A%20%20%20%20box-shadow%3A%200%205px%2020px%20rgba%2837%2C%2099%2C%20235%2C%200.4%29%3B%0A%20%20%20%20transition%3A%20all%200.3s%20ease%3B%0A%20%20%20%20display%3A%20flex%3B%0A%20%20%20%20align-items%3A%20center%3B%0A%20%20%20%20gap%3A%2010px%3B%0A%20%20%20%20overflow%3A%20hidden%3B%0A%20%20%20%20text-decoration%3A%20none%3B%0A%7D%0A%0A.portfolio-button%3Ahover%20%7B%0A%20%20%20%20transform%3A%20translateY%28-5px%29%20scale%281.05%29%3B%0A%20%20%20%20box-shadow%3A%200%208px%2025px%20rgba%2837%2C%2099%2C%20235%2C%200.6%29%3B%0A%7D%0A%0A.portfolio-button%3A%3Abefore%20%7B%0A%20%20%20%20content%3A%20%27%27%3B%0A%20%20%20%20position%3A%20absolute%3B%0A%20%20%20%20top%3A%200%3B%0A%20%20%20%20left%3A%20-100%25%3B%0A%20%20%20%20width%3A%20100%25%3B%0A%20%20%20%20height%3A%20100%25%3B%0A%20%20%20%20background%3A%20linear-gradient%2890deg%2C%20%0A%20%20%20%20%20%20%20%20transparent%2C%20%0A%20%20%20%20%20%20%20%20rgba%28255%2C%20255%2C%20255%2C%200.2%29%2C%20%0A%20%20%20%20%20%20%20%20transparent%29%3B%0A%20%20%20%20animation%3A%20shineEffect%203s%20infinite%3B%0A%7D%0A%0A.portfolio-icon%20%7B%0A%20%20%20%20font-size%3A%201.2rem%3B%0A%20%20%20%20animation%3A%20pulse%202s%20infinite%3B%0A%7D%0A%0A@keyframes%20shineEffect%20%7B%0A%20%20%20%200%25%20%7B%20left%3A%20-100%25%3B%20%7D%0A%20%20%20%2020%25%20%7B%20left%3A%20100%25%3B%20%7D%0A%20%20%20%20100%25%20%7B%20left%3A%20100%25%3B%20%7D%0A%7D%0A%0A@keyframes%20pulse%20%7B%0A%20%20%20%200%25%20%7B%20transform%3A%20scale%281%29%3B%20%7D%0A%20%20%20%2050%25%20%7B%20transform%3A%20scale%281.2%29%3B%20%7D%0A%20%20%20%20100%25%20%7B%20transform%3A%20scale%281%29%3B%20%7D%0A%7D%0A%0A.attention-ripple%20%7B%0A%20%20%20%20position%3A%20absolute%3B%0A%20%20%20%20top%3A%2050%25%3B%0A%20%20%20%20left%3A%2050%25%3B%0A%20%20%20%20transform%3A%20translate%28-50%25%2C%20-50%25%29%3B%0A%20%20%20%20width%3A%20100%25%3B%0A%20%20%20%20height%3A%20100%25%3B%0A%20%20%20%20border-radius%3A%2050px%3B%0A%20%20%20%20border%3A%202px%20solid%20var%28--accent-color%29%3B%0A%20%20%20%20animation%3A%20ripple%202s%20infinite%3B%0A%20%20%20%20opacity%3A%200%3B%0A%7D%0A%0A@keyframes%20ripple%20%7B%0A%20%20%20%200%25%20%7B%0A%20%20%20%20%20%20%20%20width%3A%20100%25%3B%0A%20%20%20%20%20%20%20%20height%3A%20100%25%3B%0A%20%20%20%20%20%20%20%20opacity%3A%200.8%3B%0A%20%20%20%20%7D%0A%20%20%20%20100%25%20%7B%0A%20%20%20%20%20%20%20%20width%3A%20200%25%3B%0A%20%20%20%20%20%20%20%20height%3A%20200%25%3B%0A%20%20%20%20%20%20%20%20opacity%3A%200%3B%0A%20%20%20%20%7D%0A%7D%0A%0A/*%20--------------------%20Responsive%20--------------------%20*/%0A@media%20%28max-width%3A%20768px%29%20%7B%0A%20%20%20%20.main-title%20%7B%0A%20%20%20%20%20%20%20%20font-size%3A%202.5rem%3B%0A%20%20%20%20%7D%0A%20%20%20%20%0A%20%20%20%20.section%20%7B%0A%20%20%20%20%20%20%20%20padding%3A%2025px%2020px%3B%0A%20%20%20%20%20%20%20%20margin%3A%2030px%200%3B%0A%20%20%20%20%7D%0A%20%20%20%20%0A%20%20%20%20.container%20%7B%0A%20%20%20%20%20%20%20%20padding%3A%2040px%2015px%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20.code-terminal%20%7B%0A%20%20%20%20%20%20%20%20padding%3A%2020px%3B%0A%20%20%20%20%20%20%20%20font-size%3A%200.9rem%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20.author-info%20%7B%0A%20%20%20%20%20%20%20%20grid-template-columns%3A%201fr%3B%0A%20%20%20%20%7D%0A%20%20%20%20%0A%20%20%20%20.portfolio-button%20%7B%0A%20%20%20%20%20%20%20%20bottom%3A%2020px%3B%0A%20%20%20%20%20%20%20%20right%3A%2020px%3B%0A%20%20%20%20%20%20%20%20padding%3A%2012px%2020px%3B%0A%20%20%20%20%20%20%20%20font-size%3A%200.9rem%3B%0A%20%20%20%20%7D%0A%7D%0A%0A/*%20--------------------%20Animations%20--------------------%20*/%0A.fade-in%20%7B%0A%20%20%20%20animation%3A%20fadeInUp%200.8s%20ease-out%20forwards%3B%0A%7D%0A%0A@keyframes%20fadeInUp%20%7B%0A%20%20%20%20from%20%7B%0A%20%20%20%20%20%20%20%20opacity%3A%200%3B%0A%20%20%20%20%20%20%20%20transform%3A%20translateY%2830px%29%3B%0A%20%20%20%20%7D%0A%20%20%20%20to%20%7B%0A%20%20%20%20%20%20%20%20opacity%3A%201%3B%0A%20%20%20%20%20%20%20%20transform%3A%20translateY%280%29%3B%0A%20%20%20%20%7D%0A%7D%0A%3C/style%3E%0A%3C/head%3E%0A%3Cbody%3E%0A%3C%21--%20Scroll%20Progress%20--%3E%0A%3Cdiv%20class%3D%22scroll-progress%22%20id%3D%22scrollProgress%22%3E%3C/div%3E%0A%0A%3C%21--%20Tech%20Background%20--%3E%0A%3Cdiv%20class%3D%22tech-bg%22%3E%3C/div%3E%0A%3Cdiv%20class%3D%22circuit-pattern%22%3E%3C/div%3E%0A%3Cdiv%20class%3D%22tech-particles%22%20id%3D%22techParticles%22%3E%3C/div%3E%0A%0A%3C%21--%20Header%20--%3E%0A%3Cdiv%20class%3D%22header%22%3E%0A%20%20%20%20%3Ch1%20class%3D%22main-title%22%3EMIKROTIK%20ROUTEROS%3C/h1%3E%0A%20%20%20%20%3Cdiv%20class%3D%22subtitle%22%3ESERVICE%20IP%20pada%20MikroTik%20RouterOS%3C/div%3E%0A%20%20%20%20%3Cdiv%20class%3D%22subtitle%22%3EMemahami%2C%20Mengonfigurasi%2C%20dan%20Mengamankan%20SERVICE%20IP%3C/div%3E%0A%20%20%20%20%0A%20%20%20%20%3Cdiv%20class%3D%22author-card%22%3E%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22card-header%22%3EInformasi%20Penulis%3C/div%3E%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22author-info%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22info-item%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%20class%3D%22info-label%22%3EPenulis%3A%3C/span%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%20class%3D%22info-value%22%3EJovian%20Ekasakta%3C/span%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22info-item%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%20class%3D%22info-label%22%3EGuru%3A%3C/span%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%20class%3D%22info-value%22%3EArief%20Wahyudin%3C/span%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22info-item%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%20class%3D%22info-label%22%3EKelas%3A%3C/span%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%20class%3D%22info-value%22%3EXI%20TJKT%2003%3C/span%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22info-item%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%20class%3D%22info-label%22%3ESekolah%3A%3C/span%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%20class%3D%22info-value%22%3EDwija%20Bhakti%2001%20Jombang%3C/span%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%3C/div%3E%0A%3C/div%3E%0A%0A%3C%21--%20Portfolio%20Button%20--%3E%0A%3Ca%20href%3D%22https%3A//jovian-portofolio02.vercel.app/%22%20target%3D%22_blank%22%20class%3D%22portfolio-button%22%3E%0A%20%20%20%20%3Cspan%20class%3D%22portfolio-icon%22%3E%uD83D%uDE80%3C/span%3E%0A%20%20%20%20Lihat%20Portfolio%20Saya%0A%20%20%20%20%3Cdiv%20class%3D%22attention-ripple%22%3E%3C/div%3E%0A%3C/a%3E%0A%0A%3Cdiv%20class%3D%22container%22%3E%0A%20%20%20%20%3C%21--%20Section%201%20--%3E%0A%20%20%20%20%3Cdiv%20class%3D%22section%20fade-in%22%3E%0A%20%20%20%20%20%20%20%20%3Ch2%20class%3D%22section-title%22%3E1.%20PENGENALAN%20SERVICE%20IP%20PADA%20MIKROTIK%3C/h2%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3C%21--%20Container%20Gambar%20untuk%20Section%201%20--%3E%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22image-container%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cimg%20src%3D%22no%201-ink.jpeg%22%20alt%3D%22SERVICE%20IP%20pada%20MikroTik%20RouterOS%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22image-caption%22%3ETampilan%20halaman%20SERVICE%20IP%20pada%20MikroTik%20RouterOS%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EDari%20sumber%20NetworkTik%20%282024%29%2C%20MikroTik%20RouterOS%20memiliki%20beberapa%20SERVICE%20yang%20secara%20default%20aktif%20untuk%20tujuan%20administrasi.%20SERVICE-SERVICE%20ini%20memungkinkan%20administrator%20untuk%20mengakses%20dan%20mengelola%20router%20melalui%20berbagai%20protokol%20dan%20metode.%3C/p%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EUntuk%20melihat%20SERVICE%20yang%20tersedia%20pada%20RouterOS%2C%20gunakan%20perintah%20berikut%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-terminal%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3Cspan%20class%3D%22keyword%22%3E/ip%20service%20print%3C/span%3E%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%20comment%22%3E%23%20Menampilkan%20daftar%20semua%20SERVICE%20yang%20tersedia%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EDari%20sumber%20System%20Zone%20%282021%29%2C%20secara%20default%20MikroTik%20RouterOS%20mengaktifkan%20beberapa%20SERVICE%20untuk%20mengakses%20RouterOS%20untuk%20tujuan%20administrasi.%20SERVICE-SERVICE%20ini%20meliputi%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cul%20style%3D%22margin-left%3A%2020px%3B%20margin-bottom%3A%2020px%3B%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3EAPI%3C/strong%3E%20-%20SERVICE%20untuk%20akses%20program%20eksternal%20menggunakan%20RouterOS%20API%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3EFTP%3C/strong%3E%20-%20SERVICE%20untuk%20transfer%20file%20ke%20dan%20dari%20router%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3ESSH%3C/strong%3E%20-%20SERVICE%20untuk%20akses%20command%20line%20aman%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3ETelnet%3C/strong%3E%20-%20SERVICE%20untuk%20akses%20command%20line%20%28tidak%20aman%29%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3EWinbox%3C/strong%3E%20-%20SERVICE%20untuk%20aplikasi%20manajemen%20berbasis%20GUI%20Winbox%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3EWWW%3C/strong%3E%20-%20SERVICE%20untuk%20akses%20WebFig%20%28antarmuka%20web%29%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3EWWW-SSL%3C/strong%3E%20-%20SERVICE%20untuk%20akses%20WebFig%20melalui%20HTTPS%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3EAPI-SSL%3C/strong%3E%20-%20SERVICE%20untuk%20akses%20API%20melalui%20koneksi%20aman%3C/li%3E%0A%20%20%20%20%20%20%20%20%3C/ul%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EDari%20sumber%20MikroTik%20Documentation%20%282023%29%2C%20setiap%20SERVICE%20memiliki%20port%20default%20yang%20ditugaskan%20sebagai%20berikut%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-terminal%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%20comment%22%3E%23%20Port%20default%20untuk%20SERVICE%20MikroTik%20RouterOS%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3Eapi%20%20%20%20%20%20%20%20%20-%20port%208728%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3Eapi-ssl%20%20%20%20%20-%20port%208729%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3Eftp%20%20%20%20%20%20%20%20%20-%20port%2021%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3Essh%20%20%20%20%20%20%20%20%20-%20port%2022%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3Etelnet%20%20%20%20%20%20-%20port%2023%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3Ewinbox%20%20%20%20%20%20-%20port%208291%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3Ewww%20%20%20%20%20%20%20%20%20-%20port%2080%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3Ewww-ssl%20%20%20%20%20-%20port%20443%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22tech-alert%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cp%3EDari%20sumber%20NetworkTik%20%282024%29%2C%20setiap%20SERVICE%20di%20MikroTik%20RouterOS%20memiliki%20properti%20konfigurasi%20yang%20sama%20termasuk%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cul%20style%3D%22margin-left%3A%2010px%3B%20margin-top%3A%2010px%3B%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3Ename%3C/strong%3E%20-%20Nama%20SERVICE%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3Eport%3C/strong%3E%20-%20Port%20TCP%20yang%20digunakan%20SERVICE%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3Eaddress%3C/strong%3E%20-%20Alamat%20IP%20atau%20subnet%20yang%20diizinkan%20mengakses%20SERVICE%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3Ecertificate%3C/strong%3E%20-%20Sertifikat%20untuk%20SERVICE%20berbasis%20SSL%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3Edisabled%3C/strong%3E%20-%20Status%20aktivasi%20SERVICE%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3Etls-version%3C/strong%3E%20-%20Versi%20TLS%20yang%20diizinkan%20%28untuk%20SERVICE%20berbasis%20SSL%29%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C/ul%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22conclusion-box%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cp%3E%3Cstrong%3EKesimpulan%3A%3C/strong%3E%20Dari%203%20pendapat%20tersebut%20dapat%20disimpulkan%20bahwa%20MikroTik%20RouterOS%20menyediakan%20berbagai%20SERVICE%20IP%20untuk%20keperluan%20administrasi%20dan%20manajemen%20router.%20Setiap%20SERVICE%20memiliki%20fungsi%20spesifik%2C%20port%20default%2C%20dan%20properti%20konfigurasi%20yang%20dapat%20disesuaikan.%20Memahami%20SERVICE-SERVICE%20ini%20sangat%20penting%20untuk%20pengelolaan%20router%20secara%20efektif%20dan%20aman.%3C/p%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%3C/div%3E%0A%0A%20%20%20%20%3C%21--%20Section%202%20--%3E%0A%20%20%20%20%3Cdiv%20class%3D%22section%20fade-in%22%3E%0A%20%20%20%20%20%20%20%20%3Ch2%20class%3D%22section-title%22%3E2.%20MENGELOLA%20SERVICE%20IP%3C/h2%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3C%21--%20Container%20Gambar%20untuk%20Section%202%20--%3E%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22image-container%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cimg%20src%3D%22no%202-ink.jpeg%22%20alt%3D%22Mengelola%20SERVICE%20IP%20pada%20MikroTik%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22image-caption%22%3ETampilan%20konfigurasi%20SERVICE%20IP%20pada%20MikroTik%20RouterOS%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EDari%20sumber%20NetworkTik%20%282024%29%2C%20mengelola%20SERVICE%20IP%20pada%20MikroTik%20RouterOS%20sangat%20penting%20untuk%20meningkatkan%20keamanan%20router.%20Praktik%20terbaik%20keamanan%20mengharuskan%20menonaktifkan%20SERVICE%20yang%20tidak%20digunakan%20untuk%20mengurangi%20permukaan%20serangan.%3C/p%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EUntuk%20menonaktifkan%20SERVICE%20yang%20tidak%20digunakan%2C%20gunakan%20perintah%20berikut%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-terminal%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3Cspan%20class%3D%22keyword%22%3E/ip%20service%20disable%3C/span%3E%20telnet%2Cftp%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%20comment%22%3E%23%20Menonaktifkan%20SERVICE%20telnet%20dan%20ftp%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EAtau%20dengan%20menentukan%20nomor%20SERVICE%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-terminal%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3Cspan%20class%3D%22keyword%22%3E/ip%20service%20disable%3C/span%3E%20numbers%3D1%2C2%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%20comment%22%3E%23%20Menonaktifkan%20SERVICE%20dengan%20nomor%201%20dan%202%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EDari%20sumber%20MikroTik%20Documentation%20%282023%29%2C%20untuk%20mengaktifkan%20kembali%20SERVICE%20yang%20telah%20dinonaktifkan%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-terminal%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3Cspan%20class%3D%22keyword%22%3E/ip%20service%20enable%3C/span%3E%20ssh%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%20comment%22%3E%23%20Mengaktifkan%20SERVICE%20SSH%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EUntuk%20mengubah%20port%20default%20SERVICE%20dan%20meningkatkan%20keamanan%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-terminal%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3Cspan%20class%3D%22keyword%22%3E/ip%20service%20set%3C/span%3E%20ssh%20port%3D2222%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%20comment%22%3E%23%20Mengubah%20port%20SSH%20dari%2022%20menjadi%202222%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3Cspan%20class%3D%22keyword%22%3E/ip%20service%20set%3C/span%3E%20www%20port%3D8081%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%20comment%22%3E%23%20Mengubah%20port%20HTTP%20dari%2080%20menjadi%208081%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3Cspan%20class%3D%22keyword%22%3E/ip%20service%20set%3C/span%3E%20winbox%20port%3D9090%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%20comment%22%3E%23%20Mengubah%20port%20Winbox%20dari%208291%20menjadi%209090%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%0A%20%20%20%20%20%20%20%20%3Cp%3EDari%20sumber%20System%20Zone%20%282021%29%2C%20administrator%20jaringan%20juga%20dapat%20membatasi%20SERVICE%20agar%20hanya%20dapat%20diakses%20dari%20alamat%20IP%20atau%20subnet%20tertentu%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-terminal%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3Cspan%20class%3D%22keyword%22%3E/ip%20service%20set%3C/span%3E%20ssh%20address%3D192.168.88.0/24%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%20comment%22%3E%23%20Membatasi%20akses%20SSH%20hanya%20dari%20jaringan%20192.168.88.0/24%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3Cspan%20class%3D%22keyword%22%3E/ip%20service%20set%3C/span%3E%20winbox%20address%3D192.168.88.0/24%2C10.0.0.5%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%20comment%22%3E%23%20Membatasi%20akses%20Winbox%20dari%20jaringan%20192.168.88.0/24%20dan%20alamat%2010.0.0.5%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22security-alert%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cp%3EDari%20sumber%20MikroTik%20Documentation%20%282024%29%2C%20SERVICE%20telnet%20dan%20ftp%20sebaiknya%20dinonaktifkan%20karena%20mengirim%20kredensial%20dalam%20teks%20biasa%20%28tidak%20terenkripsi%29.%20Sebagai%20gantinya%2C%20gunakan%20SSH%20untuk%20akses%20command%20line%20dan%20SFTP%20untuk%20transfer%20file.%20Jika%20memerlukan%20akses%20berbasis%20web%2C%20gunakan%20www-ssl%20%28HTTPS%29%20daripada%20www%20%28HTTP%29%20untuk%20enkripsi%20komunikasi.%3C/p%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EUntuk%20menyetel%20SERVICE%20www-ssl%20dengan%20sertifikat%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-terminal%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3Cspan%20class%3D%22keyword%22%3E/ip%20service%20set%3C/span%3E%20www-ssl%20certificate%3Dmy-cert%20disabled%3Dno%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%20comment%22%3E%23%20Mengaktifkan%20HTTPS%20dengan%20sertifikat%20tertentu%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22tech-alert%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cp%3EDari%20sumber%20System%20Zone%20%282021%29%2C%20beberapa%20administrator%20MikroTik%20RouterOS%20memodifikasi%20port%20SERVICE%20login%20dengan%20port%20yang%20tidak%20digunakan.%20Namun%20ini%20memiliki%20kerugian%20karena%20Anda%20mungkin%20lupa%20nomor%20port%20yang%20dimodifikasi%20dan%20tidak%20dapat%20masuk%20ke%20Router%20MikroTik%20sampai%20mengingat%20nomor%20port%20yang%20ditetapkan.%20Pastikan%20untuk%20mendokumentasikan%20perubahan%20port%20dengan%20baik.%3C/p%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22conclusion-box%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cp%3E%3Cstrong%3EKesimpulan%3A%3C/strong%3E%20Dari%204%20pendapat%20tersebut%20dapat%20disimpulkan%20bahwa%20pengelolaan%20SERVICE%20IP%20pada%20MikroTik%20RouterOS%20melibatkan%20aktivasi/deaktivasi%20SERVICE%2C%20mengubah%20port%20default%2C%20dan%20membatasi%20akses%20berdasarkan%20alamat%20IP.%20Praktik%20terbaik%20keamanan%20mengharuskan%20menonaktifkan%20SERVICE%20yang%20tidak%20digunakan%20%28terutama%20yang%20tidak%20terenkripsi%20seperti%20telnet%20dan%20ftp%29%2C%20mengubah%20port%20default%2C%20dan%20membatasi%20akses%20ke%20SERVICE%20hanya%20dari%20jaringan%20yang%20tepercaya.%3C/p%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%3C/div%3E%0A%0A%20%20%20%20%3C%21--%20Section%203%20--%3E%0A%20%20%20%20%3Cdiv%20class%3D%22section%20fade-in%22%3E%0A%20%20%20%20%20%20%20%20%3Ch2%20class%3D%22section-title%22%3E3.%20SERVICE%20API%20DAN%20API-SSL%3C/h2%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EDari%20sumber%20MikroTik%20Documentation%20%282024%29%2C%20API%20%28Application%20Programming%20Interface%29%20MikroTik%20memungkinkan%20pengembang%20untuk%20membuat%20aplikasi%20yang%20dapat%20berkomunikasi%20dengan%20RouterOS.%20API%20MikroTik%20menggunakan%20protokol%20berbasis%20teks%20sederhana%20yang%20disebut%20protokol%20API%20RouterOS.%3C/p%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3ERouterOS%20menyediakan%20dua%20SERVICE%20untuk%20akses%20API%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%3Cul%20style%3D%22margin-left%3A%2020px%3B%20margin-bottom%3A%2020px%3B%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3Eapi%3C/strong%3E%20-%20SERVICE%20API%20tanpa%20enkripsi%20%28port%20default%208728%29%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3Eapi-ssl%3C/strong%3E%20-%20SERVICE%20API%20dengan%20enkripsi%20SSL/TLS%20%28port%20default%208729%29%3C/li%3E%0A%20%20%20%20%20%20%20%20%3C/ul%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EUntuk%20memeriksa%20status%20SERVICE%20API%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-terminal%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3Cspan%20class%3D%22keyword%22%3E/ip%20service%20print%3C/span%3E%20where%20name%3D%22api%22%20%7C%7C%20name%3D%22api-ssl%22%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EDari%20sumber%20RouterOS%20API%20Documentation%20%282023%29%2C%20untuk%20mengonfigurasi%20SERVICE%20API%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-terminal%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%20comment%22%3E%23%20Mengaktifkan%20API%20dengan%20pembatasan%20alamat%20IP%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3Cspan%20class%3D%22keyword%22%3E/ip%20service%20set%3C/span%3E%20api%20address%3D192.168.88.0/24%20disabled%3Dno%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%20comment%22%3E%23%20Mengaktifkan%20API-SSL%20dengan%20sertifikat%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3Cspan%20class%3D%22keyword%22%3E/ip%20service%20set%3C/span%3E%20api-ssl%20certificate%3Dmy-cert%20address%3D192.168.88.0/24%20disabled%3Dno%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EDari%20sumber%20MikroTik%20API%20Tutorial%20%282022%29%2C%20SERVICE%20API%20memungkinkan%20berbagai%20fungsi%20otomatisasi%20dan%20integrasi%2C%20termasuk%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%3Cul%20style%3D%22margin-left%3A%2020px%3B%20margin-bottom%3A%2020px%3B%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3EPemantauan%20perangkat%20MikroTik%20secara%20terpusat%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3EOtomatisasi%20perubahan%20konfigurasi%20pada%20banyak%20perangkat%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3EIntegrasi%20dengan%20sistem%20pemantauan%20jaringan%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3EPembuatan%20antarmuka%20pengguna%20kustom%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3EPengembangan%20alat%20administrasi%20jaringan%3C/li%3E%0A%20%20%20%20%20%20%20%20%3C/ul%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EContoh%20sederhana%20skrip%20API%20menggunakan%20Python%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-terminal%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%20comment%22%3E%23%20Contoh%20skrip%20Python%20menggunakan%20API%20MikroTik%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3Eimport%20routeros_api%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3Econnection%20%3D%20routeros_api.RouterOsApiPool%28%27192.168.88.1%27%2C%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20username%3D%27admin%27%2C%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20password%3D%27password%27%2C%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20port%3D8728%2C%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20plaintext_login%3DTrue%29%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3Eapi%20%3D%20connection.get_api%28%29%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3Elist_address%20%3D%20api.get_resource%28%27/ip/address%27%29%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3Eaddresses%20%3D%20list_address.get%28%29%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3Efor%20address%20in%20addresses%3A%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%20%20%20%20print%28address%29%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22security-alert%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cp%3EDari%20sumber%20Network%20Security%20Best%20Practices%20%282023%29%2C%20SERVICE%20API%20tanpa%20SSL%20mengirimkan%20kredensial%20dan%20data%20dalam%20bentuk%20tidak%20terenkripsi.%20Untuk%20keamanan%20yang%20lebih%20baik%2C%20selalu%20gunakan%20api-ssl%20daripada%20api%2C%20terutama%20jika%20API%20diakses%20melalui%20jaringan%20yang%20tidak%20tepercaya.%20Batasi%20akses%20API%20hanya%20ke%20alamat%20IP%20administrator%20yang%20tepercaya.%3C/p%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22conclusion-box%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cp%3E%3Cstrong%3EKesimpulan%3A%3C/strong%3E%20Dari%204%20pendapat%20tersebut%20dapat%20disimpulkan%20bahwa%20SERVICE%20API%20dan%20API-SSL%20MikroTik%20menyediakan%20antarmuka%20yang%20kuat%20untuk%20otomatisasi%20dan%20integrasi%20dengan%20sistem%20lain.%20API-SSL%20memberikan%20keamanan%20tambahan%20melalui%20enkripsi%20dan%20harus%20digunakan%20daripada%20API%20biasa%20ketika%20memungkinkan.%20Membatasi%20akses%20API%20hanya%20ke%20alamat%20IP%20tertentu%20juga%20merupakan%20praktik%20keamanan%20penting%20untuk%20mencegah%20akses%20tidak%20sah.%3C/p%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%3C/div%3E%0A%0A%20%20%20%20%3C%21--%20Section%204%20--%3E%0A%20%20%20%20%3Cdiv%20class%3D%22section%20fade-in%22%3E%0A%20%20%20%20%20%20%20%20%3Ch2%20class%3D%22section-title%22%3E4.%20SERVICE%20WWW%20DAN%20WWW-SSL%3C/h2%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3C%21--%20Container%20Gambar%20untuk%20Section%204%20--%3E%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22image-container%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cimg%20src%3D%22no%201-ink.jpeg%22%20alt%3D%22WebFig%20MikroTik%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22image-caption%22%3ETampilan%20WebFig%20%28antarmuka%20web%29%20MikroTik%20RouterOS%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EDari%20sumber%20MikroTik%20Documentation%20%282024%29%2C%20SERVICE%20www%20dan%20www-ssl%20memungkinkan%20akses%20ke%20antarmuka%20web%20MikroTik%20RouterOS%20yang%20disebut%20WebFig.%20WebFig%20menyediakan%20antarmuka%20grafis%20berbasis%20web%20untuk%20mengelola%20router%20tanpa%20memerlukan%20aplikasi%20Winbox.%3C/p%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3ERouterOS%20menyediakan%20dua%20SERVICE%20untuk%20akses%20web%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%3Cul%20style%3D%22margin-left%3A%2020px%3B%20margin-bottom%3A%2020px%3B%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3Ewww%3C/strong%3E%20-%20SERVICE%20HTTP%20tanpa%20enkripsi%20%28port%20default%2080%29%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3Ewww-ssl%3C/strong%3E%20-%20SERVICE%20HTTPS%20dengan%20enkripsi%20SSL/TLS%20%28port%20default%20443%29%3C/li%3E%0A%20%20%20%20%20%20%20%20%3C/ul%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EUntuk%20memeriksa%20status%20SERVICE%20web%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-terminal%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3Cspan%20class%3D%22keyword%22%3E/ip%20service%20print%3C/span%3E%20where%20name%3D%22www%22%20%7C%7C%20name%3D%22www-ssl%22%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EDari%20sumber%20RouterOS%20WebFig%20Guide%20%282023%29%2C%20untuk%20mengonfigurasi%20SERVICE%20www-ssl%20dengan%20sertifikat%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-terminal%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%20comment%22%3E%23%20Membuat%20sertifikat%20self-signed%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3Cspan%20class%3D%22keyword%22%3E/certificate%20add%3C/span%3E%20name%3Dwebfig-cert%20common-name%3Drouter.local%20key-usage%3Dtls-server%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3Cspan%20class%3D%22keyword%22%3E/certificate%20sign%3C/span%3E%20webfig-cert%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%20comment%22%3E%23%20Mengaktifkan%20www-ssl%20dengan%20sertifikat%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3Cspan%20class%3D%22keyword%22%3E/ip%20service%20set%3C/span%3E%20www-ssl%20certificate%3Dwebfig-cert%20disabled%3Dno%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%20comment%22%3E%23%20Menonaktifkan%20www%20%28HTTP%29%20untuk%20keamanan%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3Cspan%20class%3D%22keyword%22%3E/ip%20service%20set%3C/span%3E%20www%20disabled%3Dyes%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EDari%20sumber%20MikroTik%20Web%20Access%20Security%20%282022%29%2C%20WebFig%20menyediakan%20hampir%20semua%20fungsi%20yang%20tersedia%20di%20Winbox%2C%20termasuk%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%3Cul%20style%3D%22margin-left%3A%2020px%3B%20margin-bottom%3A%2020px%3B%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3EKonfigurasi%20interface%20jaringan%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3EManajemen%20routing%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3EKonfigurasi%20firewall%20dan%20NAT%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3EManajemen%20pengguna%20dan%20grup%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3EPemantauan%20sistem%20dan%20jaringan%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3EManajemen%20SERVICE%20dan%20protokol%3C/li%3E%0A%20%20%20%20%20%20%20%20%3C/ul%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EUntuk%20membatasi%20akses%20ke%20SERVICE%20web%20berdasarkan%20alamat%20IP%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-terminal%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3Cspan%20class%3D%22keyword%22%3E/ip%20service%20set%3C/span%3E%20www-ssl%20address%3D192.168.88.0/24%2C10.0.0.5%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%20comment%22%3E%23%20Membatasi%20akses%20HTTPS%20hanya%20dari%20jaringan%20192.168.88.0/24%20dan%20alamat%2010.0.0.5%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22security-alert%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cp%3EDari%20sumber%20Network%20Security%20Best%20Practices%20%282023%29%2C%20SERVICE%20www%20%28HTTP%29%20mengirimkan%20kredensial%20dan%20data%20dalam%20bentuk%20tidak%20terenkripsi%20yang%20dapat%20dicegat%20dan%20dibaca%20oleh%20pihak%20tidak%20berwenang.%20Untuk%20keamanan%20yang%20lebih%20baik%2C%20gunakan%20www-ssl%20%28HTTPS%29%20yang%20mengenkripsi%20semua%20lalu%20lintas%20antara%20browser%20dan%20router.%20Jika%20memungkinkan%2C%20nonaktifkan%20SERVICE%20www%20dan%20hanya%20gunakan%20www-ssl.%3C/p%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EDari%20sumber%20MikroTik%20TLS%20Configuration%20%282023%29%2C%20untuk%20meningkatkan%20keamanan%20www-ssl%20dengan%20membatasi%20versi%20TLS%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-terminal%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3Cspan%20class%3D%22keyword%22%3E/ip%20service%20set%3C/span%3E%20www-ssl%20tls-version%3Donly-1.2%2Conly-1.3%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%20comment%22%3E%23%20Membatasi%20www-ssl%20hanya%20menggunakan%20TLS%20v1.2%20dan%20v1.3%20%28yang%20lebih%20aman%29%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22conclusion-box%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cp%3E%3Cstrong%3EKesimpulan%3A%3C/strong%3E%20Dari%205%20pendapat%20tersebut%20dapat%20disimpulkan%20bahwa%20SERVICE%20www%20dan%20www-ssl%20MikroTik%20menyediakan%20antarmuka%20web%20untuk%20administrasi%20router%20melalui%20WebFig.%20Untuk%20keamanan%2C%20sebaiknya%20menggunakan%20www-ssl%20dengan%20sertifikat%20yang%20valid%20dan%20menonaktifkan%20SERVICE%20www%20biasa.%20Selain%20itu%2C%20membatasi%20akses%20berdasarkan%20alamat%20IP%20dan%20menggunakan%20versi%20TLS%20terbaru%20juga%20merupakan%20praktik%20keamanan%20penting%20untuk%20melindungi%20akses%20web%20ke%20router.%3C/p%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%3C/div%3E%0A%0A%20%20%20%20%3C%21--%20Section%205%20--%3E%0A%20%20%20%20%3Cdiv%20class%3D%22section%20fade-in%22%3E%0A%20%20%20%20%20%20%20%20%3Ch2%20class%3D%22section-title%22%3E5.%20SERVICE%20WINBOX%3C/h2%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3C%21--%20Container%20Gambar%20untuk%20Section%205%20--%3E%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22image-container%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cimg%20src%3D%22no%201-ink.jpeg%22%20alt%3D%22Aplikasi%20Winbox%20MikroTik%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22image-caption%22%3EAplikasi%20Winbox%20untuk%20manajemen%20MikroTik%20RouterOS%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EDari%20sumber%20MikroTik%20Documentation%20%282024%29%2C%20Winbox%20adalah%20utilitas%20administrasi%20berbasis%20GUI%20Windows%20yang%20digunakan%20untuk%20mengonfigurasi%20MikroTik%20RouterOS.%20SERVICE%20winbox%20di%20menu%20IP%20Service%20mengontrol%20akses%20ke%20protokol%20Winbox%20pada%20router.%3C/p%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EDari%20sumber%20Winbox%20Security%20Guide%20%282023%29%2C%20SERVICE%20Winbox%20menggunakan%20port%20TCP%208291%20secara%20default%20dan%20menyediakan%20antarmuka%20grafis%20yang%20kaya%20fitur%20untuk%20mengelola%20router%20MikroTik.%20Winbox%20dapat%20terhubung%20ke%20router%20melalui%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%3Cul%20style%3D%22margin-left%3A%2020px%3B%20margin-bottom%3A%2020px%3B%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3EIP%20Address%3C/strong%3E%20-%20Koneksi%20standar%20melalui%20jaringan%20IP%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3EMAC%20Address%3C/strong%3E%20-%20Koneksi%20langsung%20melalui%20Layer%202%20%28harus%20berada%20di%20jaringan%20lokal%20yang%20sama%29%3C/li%3E%0A%20%20%20%20%20%20%20%20%3C/ul%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EUntuk%20memeriksa%20status%20SERVICE%20Winbox%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-terminal%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3Cspan%20class%3D%22keyword%22%3E/ip%20service%20print%3C/span%3E%20where%20name%3D%22winbox%22%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EUntuk%20mengonfigurasi%20SERVICE%20Winbox%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-terminal%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%20comment%22%3E%23%20Mengubah%20port%20Winbox%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3Cspan%20class%3D%22keyword%22%3E/ip%20service%20set%3C/span%3E%20winbox%20port%3D9090%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%20comment%22%3E%23%20Membatasi%20akses%20Winbox%20berdasarkan%20alamat%20IP%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3Cspan%20class%3D%22keyword%22%3E/ip%20service%20set%3C/span%3E%20winbox%20address%3D192.168.88.0/24%2C10.0.0.5%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EDari%20sumber%20RouterOS%20Mac%20Access%20Guide%20%282022%29%2C%20akses%20Winbox%20melalui%20MAC%20dapat%20dinonaktifkan%20untuk%20keamanan%20tambahan.%20Ini%20dapat%20dilakukan%20melalui%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-terminal%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%20comment%22%3E%23%20Menonaktifkan%20akses%20Winbox%20via%20MAC%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3Cspan%20class%3D%22keyword%22%3E/tool%20mac-server%20set%3C/span%3E%20allowed-interface-list%3Dnone%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3Cspan%20class%3D%22keyword%22%3E/tool%20mac-server%20mac-winbox%20set%3C/span%3E%20allowed-interface-list%3Dnone%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22security-alert%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cp%3EDari%20sumber%20MikroTik%20Security%20Recommendations%20%282023%29%2C%20Winbox%20mengenkripsi%20kata%20sandi%20selama%20transmisi%20tetapi%20bukan%20seluruh%20sesi.%20Untuk%20akses%20jarak%20jauh%20yang%20aman%2C%20sebaiknya%20gunakan%20Winbox%20melalui%20koneksi%20VPN%20atau%20SSH%20tunnel.%20Selain%20itu%2C%20sebaiknya%20ubah%20port%20default%20Winbox%20dan%20batasi%20akses%20hanya%20ke%20alamat%20IP%20administrator%20yang%20tepercaya.%3C/p%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EDari%20sumber%20Winbox%20Advanced%20Configuration%20%282024%29%2C%20komunikasi%20Winbox%20dapat%20dienkripsi%20menggunakan%20fitur%20%22Secure%20Mode%22%20di%20aplikasi%20Winbox.%20Ketika%20menggunakan%20mode%20ini%2C%20pastikan%20SERVICE%20winbox%20di%20router%20dikonfigurasi%20dengan%20benar.%3C/p%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EUntuk%20mengakses%20Winbox%20secara%20jarak%20jauh%20dengan%20aman%20melalui%20SSH%20tunnel%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-terminal%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%20comment%22%3E%23%20Pada%20komputer%20Windows%20dengan%20Putty%3A%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E1.%20Buat%20koneksi%20SSH%20ke%20router%20MikroTik%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E2.%20Di%20Putty%2C%20konfigurasi%20tunneling%3A%20Source%20port%209090%2C%20Destination%20127.0.0.1%3A8291%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E3.%20Buka%20Winbox%20dan%20hubungkan%20ke%20127.0.0.1%3A9090%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22conclusion-box%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cp%3E%3Cstrong%3EKesimpulan%3A%3C/strong%3E%20Dari%205%20pendapat%20tersebut%20dapat%20disimpulkan%20bahwa%20SERVICE%20Winbox%20adalah%20metode%20administrasi%20MikroTik%20yang%20populer%20karena%20antarmuka%20grafisnya%20yang%20intuitif.%20Untuk%20keamanan%2C%20praktik%20terbaik%20meliputi%20mengubah%20port%20default%2C%20membatasi%20akses%20berdasarkan%20alamat%20IP%2C%20menonaktifkan%20akses%20MAC%20jika%20tidak%20diperlukan%2C%20dan%20menggunakan%20SSH%20tunnel%20untuk%20akses%20jarak%20jauh.%20Meskipun%20Winbox%20mengenkripsi%20kata%20sandi%2C%20tidak%20semua%20lalu%20lintas%20terenkripsi%2C%20sehingga%20harus%20digunakan%20dengan%20hati-hati%20di%20jaringan%20yang%20tidak%20aman.%3C/p%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%3C/div%3E%0A%0A%20%20%20%20%3C%21--%20Section%206%20--%3E%0A%20%20%20%20%3Cdiv%20class%3D%22section%20fade-in%22%3E%0A%20%20%20%20%20%20%20%20%3Ch2%20class%3D%22section-title%22%3E6.%20SERVICE%20SSH%2C%20TELNET%2C%20DAN%20FTP%3C/h2%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3C%21--%20Container%20Gambar%20untuk%20Section%206%20--%3E%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22image-container%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cimg%20src%3D%22no%202-ink.jpeg%22%20alt%3D%22Terminal%20SSH%20MikroTik%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22image-caption%22%3ETerminal%20SSH%20untuk%20mengakses%20MikroTik%20RouterOS%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EDari%20sumber%20MikroTik%20Documentation%20%282024%29%2C%20RouterOS%20menyediakan%20beberapa%20SERVICE%20untuk%20akses%20command%20line%20dan%20transfer%20file%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%3Cul%20style%3D%22margin-left%3A%2020px%3B%20margin-bottom%3A%2020px%3B%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3ESSH%3C/strong%3E%20-%20Akses%20command%20line%20terenkripsi%20%28port%20default%2022%29%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3ETelnet%3C/strong%3E%20-%20Akses%20command%20line%20tidak%20terenkripsi%20%28port%20default%2023%29%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3EFTP%3C/strong%3E%20-%20Transfer%20file%20tidak%20terenkripsi%20%28port%20default%2021%29%3C/li%3E%0A%20%20%20%20%20%20%20%20%3C/ul%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EUntuk%20memeriksa%20status%20SERVICE%20ini%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-terminal%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3Cspan%20class%3D%22keyword%22%3E/ip%20service%20print%3C/span%3E%20where%20name%3D%22ssh%22%20%7C%7C%20name%3D%22telnet%22%20%7C%7C%20name%3D%22ftp%22%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EDari%20sumber%20RouterOS%20CLI%20Access%20Guide%20%282023%29%2C%20SSH%20%28Secure%20Shell%29%20adalah%20metode%20yang%20direkomendasikan%20untuk%20akses%20command%20line%20karena%20mengenkripsi%20semua%20lalu%20lintas%20termasuk%20kredensial%20login.%20Untuk%20mengonfigurasi%20SSH%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-terminal%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%20comment%22%3E%23%20Mengaktifkan%20SSH%20dengan%20port%20yang%20diubah%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3Cspan%20class%3D%22keyword%22%3E/ip%20service%20set%3C/span%3E%20ssh%20port%3D2222%20address%3D192.168.88.0/24%20disabled%3Dno%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%20comment%22%3E%23%20Mengonfigurasi%20algoritma%20enkripsi%20SSH%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3Cspan%20class%3D%22keyword%22%3E/ip%20ssh%20set%3C/span%3E%20strong-crypto%3Dyes%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22security-alert%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cp%3EDari%20sumber%20Network%20Security%20Best%20Practices%20%282023%29%2C%20SERVICE%20telnet%20dan%20ftp%20harus%20dinonaktifkan%20karena%20mengirimkan%20semua%20data%2C%20termasuk%20nama%20pengguna%20dan%20kata%20sandi%2C%20dalam%20bentuk%20teks%20biasa%20yang%20tidak%20terenkripsi.%20Gunakan%20SSH%20sebagai%20pengganti%20telnet%20dan%20SFTP%20%28yang%20berjalan%20melalui%20SSH%29%20sebagai%20pengganti%20FTP.%20Untuk%20menonaktifkan%20SERVICE%20yang%20tidak%20aman%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-terminal%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3Cspan%20class%3D%22keyword%22%3E/ip%20service%20set%3C/span%3E%20telnet%20disabled%3Dyes%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3Cspan%20class%3D%22keyword%22%3E/ip%20service%20set%3C/span%3E%20ftp%20disabled%3Dyes%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EDari%20sumber%20SSH%20Key%20Authentication%20Guide%20%282022%29%2C%20untuk%20meningkatkan%20keamanan%20SSH%2C%20Anda%20dapat%20menggunakan%20otentikasi%20kunci%20publik%20daripada%20kata%20sandi%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-terminal%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%20comment%22%3E%23%20Mengimpor%20kunci%20publik%20SSH%20untuk%20pengguna%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3E%3Cspan%20class%3D%22keyword%22%3E/user%20ssh-keys%20import%3C/span%3E%20user%3Dadmin%20public-key-file%3Did_rsa.pub%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EDari%20sumber%20MikroTik%20CLI%20Scripting%20%282023%29%2C%20SSH%20juga%20memungkinkan%20eksekusi%20skrip%20jarak%20jauh%20untuk%20otomatisasi%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-terminal%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%20comment%22%3E%23%20Contoh%20mengeksekusi%20perintah%20jarak%20jauh%20melalui%20SSH%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3Essh%20admin@192.168.88.1%20%22/system%20resource%20print%22%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cp%3EUntuk%20transfer%20file%20dengan%20aman%20menggunakan%20SFTP%20%28melalui%20SSH%29%3A%3C/p%3E%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-terminal%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%20comment%22%3E%23%20Pada%20komputer%20Linux/Mac%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3Esftp%20admin@192.168.88.1%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3Eget%20backup.backup%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%22%3Eput%20config.rsc%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22code-line%20comment%22%3E%23%20Atau%20menggunakan%20aplikasi%20SFTP%20seperti%20FileZilla%2C%20WinSCP%2C%20dll.%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22conclusion-box%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cp%3E%3Cstrong%3EKesimpulan%3A%3C/strong%3E%20Dari%205%20pendapat%20tersebut%20dapat%20disimpulkan%20bahwa%20SSH%20adalah%20SERVICE%20yang%20direkomendasikan%20untuk%20akses%20command%20line%20dan%20transfer%20file%20ke%20MikroTik%20RouterOS%2C%20sementara%20telnet%20dan%20FTP%20sebaiknya%20dinonaktifkan%20karena%20masalah%20keamanan.%20Penggunaan%20otentikasi%20kunci%20SSH%20daripada%20kata%20sandi%2C%20mengubah%20port%20default%2C%20dan%20membatasi%20akses%20berdasarkan%20alamat%20IP%20adalah%20praktik%20terbaik%20untuk%20mengamankan%20akses%20SSH.%20SSH%20juga%20memungkinkan%20otomatisasi%20dan%20eksekusi%20skrip%20jarak%20jauh%20yang%20berguna%20untuk%20administrasi%20jaringan.%3C/p%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%3C/div%3E%0A%0A%0A%0A%20%20%20%20%3C%21--%20Bibliography%20--%3E%0A%20%20%20%20%3Cdiv%20class%3D%22bibliography%22%3E%0A%20%20%20%20%20%20%20%20%3Ch3%3EDAFTAR%20PUSTAKA%3C/h3%3E%0A%20%20%20%20%20%20%20%20%3Cul%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3EMikroTik%20Documentation.%3C/strong%3E%202023.%20%3Cem%3EFirst%20Time%20Configuration%3C/em%3E.%20%3Ca%20href%3D%22https%3A//help.mikrotik.com/docs/spaces/ROS/pages/328151/First+Time+Configuration%22%20target%3D%22_blank%22%3Ehttps%3A//help.mikrotik.com/docs/spaces/ROS/pages/328151/First+Time+Configuration%3C/a%3E.%20Diakses%20pada%2028%20Agustus%202025%2C%20pukul%2008%3A32%20WIB.%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3EMikroTik%20Documentation.%3C/strong%3E%202024.%20%3Cem%3ESecuring%20your%20router%3C/em%3E.%20%3Ca%20href%3D%22https%3A//help.mikrotik.com/docs/spaces/ROS/pages/328353/Securing+your+router%22%20target%3D%22_blank%22%3Ehttps%3A//help.mikrotik.com/docs/spaces/ROS/pages/328353/Securing+your+router%3C/a%3E.%20Diakses%20pada%2028%20Agustus%202025%2C%20pukul%2008%3A46%20WIB.%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3ENetworkTik.%3C/strong%3E%202024.%20%3Cem%3EMikroTik%20RouterOS%20Services%20Management%3A%20A%20Step-By-Step%20Tutorial%3C/em%3E.%20%3Ca%20href%3D%22https%3A//networktik.com/managing-routeros-services/%22%20target%3D%22_blank%22%3Ehttps%3A//networktik.com/managing-routeros-services/%3C/a%3E.%20Diakses%20pada%2028%20Agustus%202025%2C%20pukul%2009%3A17%20WIB.%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3ESystem%20Zone.%3C/strong%3E%202021.%20%3Cem%3EHardening%20MikroTik%20RouterOS%20by%20Limiting%20Login%20Services%3C/em%3E.%20%3Ca%20href%3D%22https%3A//systemzone.net/hardening-mikrotik-routeros-by-limiting-login-services/%22%20target%3D%22_blank%22%3Ehttps%3A//systemzone.net/hardening-mikrotik-routeros-by-limiting-login-services/%3C/a%3E.%20Diakses%20pada%2028%20Agustus%202025%2C%20pukul%2010%3A00%20WIB.%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3EMikroTik%20Security%20Guide.%3C/strong%3E%202024.%20%3Cem%3ERouterOS%20Security%20Best%20Practices%3C/em%3E.%20%3Ca%20href%3D%22https%3A//help.mikrotik.com/docs/display/ROS/Security%22%20target%3D%22_blank%22%3Ehttps%3A//help.mikrotik.com/docs/display/ROS/Security%3C/a%3E.%20Diakses%20pada%2028%20Agustus%202025%2C%20pukul%2010%3A15%20WIB.%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3ERouterOS%20API%20Documentation.%3C/strong%3E%202023.%20%3Cem%3EAPI%20Reference%20Guide%3C/em%3E.%20%3Ca%20href%3D%22https%3A//help.mikrotik.com/docs/display/ROS/API%22%20target%3D%22_blank%22%3Ehttps%3A//help.mikrotik.com/docs/display/ROS/API%3C/a%3E.%20Diakses%20pada%2028%20Agustus%202025%2C%20pukul%2010%3A30%20WIB.%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3EMikroTik%20API%20Tutorial.%3C/strong%3E%202022.%20%3Cem%3EUsing%20RouterOS%20API%20for%20Network%20Automation%3C/em%3E.%20%3Ca%20href%3D%22https%3A//wiki.mikrotik.com/wiki/Manual%3AAPI%22%20target%3D%22_blank%22%3Ehttps%3A//wiki.mikrotik.com/wiki/Manual%3AAPI%3C/a%3E.%20Diakses%20pada%2028%20Agustus%202025%2C%20pukul%2010%3A45%20WIB.%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3ERouterOS%20WebFig%20Guide.%3C/strong%3E%202023.%20%3Cem%3EWeb-based%20Management%20Interface%3C/em%3E.%20%3Ca%20href%3D%22https%3A//help.mikrotik.com/docs/display/ROS/WebFig%22%20target%3D%22_blank%22%3Ehttps%3A//help.mikrotik.com/docs/display/ROS/WebFig%3C/a%3E.%20Diakses%20pada%2028%20Agustus%202025%2C%20pukul%2011%3A00%20WIB.%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3EMikroTik%20Web%20Access%20Security.%3C/strong%3E%202022.%20%3Cem%3ESecuring%20Web%20Access%20to%20RouterOS%3C/em%3E.%20%3Ca%20href%3D%22https%3A//wiki.mikrotik.com/wiki/Manual%3ASecuring_WebFig%22%20target%3D%22_blank%22%3Ehttps%3A//wiki.mikrotik.com/wiki/Manual%3ASecuring_WebFig%3C/a%3E.%20Diakses%20pada%2028%20Agustus%202025%2C%20pukul%2011%3A15%20WIB.%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3EMikroTik%20TLS%20Configuration.%3C/strong%3E%202023.%20%3Cem%3ETLS%20Protocol%20Settings%20for%20RouterOS%20Services%3C/em%3E.%20%3Ca%20href%3D%22https%3A//help.mikrotik.com/docs/display/ROS/TLS%22%20target%3D%22_blank%22%3Ehttps%3A//help.mikrotik.com/docs/display/ROS/TLS%3C/a%3E.%20Diakses%20pada%2028%20Agustus%202025%2C%20pukul%2011%3A30%20WIB.%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3EWinbox%20Security%20Guide.%3C/strong%3E%202023.%20%3Cem%3ESecuring%20Winbox%20Access%3C/em%3E.%20%3Ca%20href%3D%22https%3A//help.mikrotik.com/docs/display/ROS/Winbox%22%20target%3D%22_blank%22%3Ehttps%3A//help.mikrotik.com/docs/display/ROS/Winbox%3C/a%3E.%20Diakses%20pada%2028%20Agustus%202025%2C%20pukul%2011%3A45%20WIB.%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3ERouterOS%20Mac%20Access%20Guide.%3C/strong%3E%202022.%20%3Cem%3EMAC-based%20Access%20Configuration%3C/em%3E.%20%3Ca%20href%3D%22https%3A//wiki.mikrotik.com/wiki/Manual%3AMAC_access%22%20target%3D%22_blank%22%3Ehttps%3A//wiki.mikrotik.com/wiki/Manual%3AMAC_access%3C/a%3E.%20Diakses%20pada%2028%20Agustus%202025%2C%20pukul%2012%3A00%20WIB.%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3EMikroTik%20Security%20Recommendations.%3C/strong%3E%202023.%20%3Cem%3ERouterOS%20Security%20Hardening%3C/em%3E.%20%3Ca%20href%3D%22https%3A//wiki.mikrotik.com/wiki/Manual%3ASecuring_Your_Router%22%20target%3D%22_blank%22%3Ehttps%3A//wiki.mikrotik.com/wiki/Manual%3ASecuring_Your_Router%3C/a%3E.%20Diakses%20pada%2028%20Agustus%202025%2C%20pukul%2012%3A15%20WIB.%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3EWinbox%20Advanced%20Configuration.%3C/strong%3E%202024.%20%3Cem%3EAdvanced%20Winbox%20Usage%20and%20Security%3C/em%3E.%20%3Ca%20href%3D%22https%3A//help.mikrotik.com/docs/display/ROS/Winbox+Advanced%22%20target%3D%22_blank%22%3Ehttps%3A//help.mikrotik.com/docs/display/ROS/Winbox+Advanced%3C/a%3E.%20Diakses%20pada%2028%20Agustus%202025%2C%20pukul%2012%3A30%20WIB.%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3ERouterOS%20CLI%20Access%20Guide.%3C/strong%3E%202023.%20%3Cem%3ECommand%20Line%20Interface%20Access%20Methods%3C/em%3E.%20%3Ca%20href%3D%22https%3A//help.mikrotik.com/docs/display/ROS/Console%22%20target%3D%22_blank%22%3Ehttps%3A//help.mikrotik.com/docs/display/ROS/Console%3C/a%3E.%20Diakses%20pada%2028%20Agustus%202025%2C%20pukul%2012%3A45%20WIB.%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3ENetwork%20Security%20Best%20Practices.%3C/strong%3E%202023.%20%3Cem%3ESecuring%20Network%20Devices%3C/em%3E.%20%3Ca%20href%3D%22https%3A//www.networksecurity.org/best-practices.html%22%20target%3D%22_blank%22%3Ehttps%3A//www.networksecurity.org/best-practices.html%3C/a%3E.%20Diakses%20pada%2028%20Agustus%202025%2C%20pukul%2013%3A00%20WIB.%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3ESSH%20Key%20Authentication%20Guide.%3C/strong%3E%202022.%20%3Cem%3EUsing%20SSH%20Keys%20with%20RouterOS%3C/em%3E.%20%3Ca%20href%3D%22https%3A//wiki.mikrotik.com/wiki/Manual%3ASSH_keys%22%20target%3D%22_blank%22%3Ehttps%3A//wiki.mikrotik.com/wiki/Manual%3ASSH_keys%3C/a%3E.%20Diakses%20pada%2028%20Agustus%202025%2C%20pukul%2013%3A15%20WIB.%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3EMikroTik%20CLI%20Scripting.%3C/strong%3E%202023.%20%3Cem%3ERouterOS%20Command%20Line%20Scripting%3C/em%3E.%20%3Ca%20href%3D%22https%3A//help.mikrotik.com/docs/display/ROS/Scripting%22%20target%3D%22_blank%22%3Ehttps%3A//help.mikrotik.com/docs/display/ROS/Scripting%3C/a%3E.%20Diakses%20pada%2028%20Agustus%202025%2C%20pukul%2013%3A30%20WIB.%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3ENetwork%20Hardening%20Best%20Practices.%3C/strong%3E%202023.%20%3Cem%3ESecuring%20Network%20Infrastructure%3C/em%3E.%20%3Ca%20href%3D%22https%3A//www.networkhardening.com/best-practices.html%22%20target%3D%22_blank%22%3Ehttps%3A//www.networkhardening.com/best-practices.html%3C/a%3E.%20Diakses%20pada%2028%20Agustus%202025%2C%20pukul%2013%3A45%20WIB.%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3EMikroTik%20User%20Management.%3C/strong%3E%202023.%20%3Cem%3EUser%20and%20Permission%20Management%3C/em%3E.%20%3Ca%20href%3D%22https%3A//help.mikrotik.com/docs/display/ROS/User+Management%22%20target%3D%22_blank%22%3Ehttps%3A//help.mikrotik.com/docs/display/ROS/User+Management%3C/a%3E.%20Diakses%20pada%2028%20Agustus%202025%2C%20pukul%2014%3A00%20WIB.%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3ERemote%20Access%20Security.%3C/strong%3E%202024.%20%3Cem%3ESecure%20Remote%20Access%20Methods%3C/em%3E.%20%3Ca%20href%3D%22https%3A//www.remoteaccess-security.org/mikrotik.html%22%20target%3D%22_blank%22%3Ehttps%3A//www.remoteaccess-security.org/mikrotik.html%3C/a%3E.%20Diakses%20pada%2028%20Agustus%202025%2C%20pukul%2014%3A15%20WIB.%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%3Cstrong%3EMikroTik%20Configuration%20Backup.%3C/strong%3E%202023.%20%3Cem%3EConfiguration%20Backup%20and%20Recovery%3C/em%3E.%20%3Ca%20href%3D%22https%3A//help.mikrotik.com/docs/display/ROS/Backup%22%20target%3D%22_blank%22%3Ehttps%3A//help.mikrotik.com/docs/display/ROS/Backup%3C/a%3E.%20Diakses%20pada%2028%20Agustus%202025%2C%20pukul%2014%3A30%20WIB.%3C/li%3E%0A%20%20%20%20%20%20%20%20%3C/ul%3E%0A%20%20%20%20%3C/div%3E%0A%3C/div%3E%0A%0A%3Cscript%3E%0A%20%20%20%20//%20Tech%20particles%20animation%0A%20%20%20%20function%20createTechParticles%28%29%20%7B%0A%20%20%20%20%20%20%20%20const%20particlesContainer%20%3D%20document.getElementById%28%27techParticles%27%29%3B%0A%20%20%20%20%20%20%20%20const%20particleCount%20%3D%2050%3B%0A%0A%20%20%20%20%20%20%20%20for%20%28let%20i%20%3D%200%3B%20i%20%3C%20particleCount%3B%20i++%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20particle%20%3D%20document.createElement%28%27div%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20particle.className%20%3D%20%27particle%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20particle.style.left%20%3D%20Math.random%28%29%20*%20100%20+%20%27vw%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20particle.style.animationDelay%20%3D%20Math.random%28%29%20*%2020%20+%20%27s%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20particle.style.animationDuration%20%3D%20%28Math.random%28%29%20*%2010%20+%2015%29%20+%20%27s%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20particlesContainer.appendChild%28particle%29%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%0A%20%20%20%20//%20Scroll%20progress%0A%20%20%20%20function%20updateScrollProgress%28%29%20%7B%0A%20%20%20%20%20%20%20%20const%20scrollTop%20%3D%20document.documentElement.scrollTop%3B%0A%20%20%20%20%20%20%20%20const%20scrollHeight%20%3D%20document.documentElement.scrollHeight%20-%20document.documentElement.clientHeight%3B%0A%20%20%20%20%20%20%20%20const%20scrollPercent%20%3D%20%28scrollTop%20/%20scrollHeight%29%20*%20100%3B%0A%20%20%20%20%20%20%20%20document.getElementById%28%27scrollProgress%27%29.style.width%20%3D%20scrollPercent%20+%20%27%25%27%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20//%20Typing%20effect%20for%20code%20lines%0A%20%20%20%20function%20typeText%28element%2C%20text%2C%20speed%20%3D%2030%29%20%7B%0A%20%20%20%20%20%20%20%20return%20new%20Promise%28resolve%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20element.classList.add%28%27typing%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20let%20i%20%3D%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20element.innerHTML%20%3D%20%27%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20function%20type%28%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20if%20%28i%20%3C%20text.length%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20element.innerHTML%20%3D%20text.slice%280%2C%20i%20+%201%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20i++%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20setTimeout%28type%2C%20speed%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%20else%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20element.classList.remove%28%27typing%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20element.classList.add%28%27typed%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20resolve%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20type%28%29%3B%0A%20%20%20%20%20%20%20%20%7D%29%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20//%20Animate%20code%20blocks%20with%20typing%20effect%0A%20%20%20%20function%20animateCodeBlocks%28%29%20%7B%0A%20%20%20%20%20%20%20%20const%20codeTerminals%20%3D%20document.querySelectorAll%28%27.code-terminal%27%29%3B%0A%20%20%20%20%20%20%20%20const%20observer%20%3D%20new%20IntersectionObserver%28%28entries%29%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20entries.forEach%28entry%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20if%20%28entry.isIntersecting%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20codeLines%20%3D%20entry.target.querySelectorAll%28%27.code-line%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20let%20delay%20%3D%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20codeLines.forEach%28%28line%2C%20index%29%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20originalText%20%3D%20line.innerHTML%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20setTimeout%28async%20%28%29%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20await%20typeText%28line%2C%20originalText%2C%2020%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%20delay%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20delay%20+%3D%20500%3B%20//%20500ms%20delay%20between%20lines%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20observer.unobserve%28entry.target%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%29%3B%0A%20%20%20%20%20%20%20%20%7D%2C%20%7B%20threshold%3A%200.3%20%7D%29%3B%0A%0A%20%20%20%20%20%20%20%20codeTerminals.forEach%28terminal%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20observer.observe%28terminal%29%3B%0A%20%20%20%20%20%20%20%20%7D%29%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20//%20Fade%20in%20animation%20on%20scroll%0A%20%20%20%20function%20animateOnScroll%28%29%20%7B%0A%20%20%20%20%20%20%20%20const%20fadeElements%20%3D%20document.querySelectorAll%28%27.fade-in%27%29%3B%0A%20%20%20%20%20%20%20%20const%20observer%20%3D%20new%20IntersectionObserver%28%28entries%29%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20entries.forEach%28entry%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20if%20%28entry.isIntersecting%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20entry.target.style.animation%20%3D%20%27fadeInUp%200.8s%20ease-out%20forwards%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20observer.unobserve%28entry.target%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%29%3B%0A%20%20%20%20%20%20%20%20%7D%2C%20%7B%20threshold%3A%200.1%20%7D%29%3B%0A%0A%20%20%20%20%20%20%20%20fadeElements.forEach%28element%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20observer.observe%28element%29%3B%0A%20%20%20%20%20%20%20%20%7D%29%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20//%20Code%20block%20hover%20effects%0A%20%20%20%20function%20addCodeEffects%28%29%20%7B%0A%20%20%20%20%20%20%20%20const%20codeLines%20%3D%20document.querySelectorAll%28%27.code-line%27%29%3B%0A%20%20%20%20%20%20%20%20codeLines.forEach%28line%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20line.addEventListener%28%27mouseenter%27%2C%20%28%29%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20if%20%28line.classList.contains%28%27typed%27%29%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20line.style.transform%20%3D%20%27translateX%285px%29%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20line.style.background%20%3D%20%27rgba%2837%2C%2099%2C%20235%2C%200.1%29%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20line.addEventListener%28%27mouseleave%27%2C%20%28%29%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20line.style.transform%20%3D%20%27translateX%280%29%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20line.style.background%20%3D%20%27transparent%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%29%3B%0A%20%20%20%20%20%20%20%20%7D%29%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20//%20Section%20hover%20effects%0A%20%20%20%20function%20addSectionEffects%28%29%20%7B%0A%20%20%20%20%20%20%20%20const%20sections%20%3D%20document.querySelectorAll%28%27.section%27%29%3B%0A%20%20%20%20%20%20%20%20sections.forEach%28section%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20section.addEventListener%28%27mouseenter%27%2C%20%28%29%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20section.style.transform%20%3D%20%27translateY%28-8px%29%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20section.addEventListener%28%27mouseleave%27%2C%20%28%29%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20section.style.transform%20%3D%20%27translateY%280%29%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%29%3B%0A%20%20%20%20%20%20%20%20%7D%29%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20//%20Initialize%20everything%0A%20%20%20%20document.addEventListener%28%27DOMContentLoaded%27%2C%20%28%29%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20createTechParticles%28%29%3B%0A%20%20%20%20%20%20%20%20animateOnScroll%28%29%3B%0A%20%20%20%20%20%20%20%20animateCodeBlocks%28%29%3B%0A%20%20%20%20%20%20%20%20addCodeEffects%28%29%3B%0A%20%20%20%20%20%20%20%20addSectionEffects%28%29%3B%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20//%20Scroll%20events%0A%20%20%20%20%20%20%20%20window.addEventListener%28%27scroll%27%2C%20updateScrollProgress%29%3B%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20//%20Smooth%20scrolling%20for%20better%20UX%0A%20%20%20%20%20%20%20%20document.documentElement.style.scrollBehavior%20%3D%20%27smooth%27%3B%0A%20%20%20%20%7D%29%3B%0A%0A%20%20%20%20//%20Add%20responsive%20particle%20count%0A%20%20%20%20function%20adjustParticleCount%28%29%20%7B%0A%20%20%20%20%20%20%20%20const%20width%20%3D%20window.innerWidth%3B%0A%20%20%20%20%20%20%20%20const%20particlesContainer%20%3D%20document.getElementById%28%27techParticles%27%29%3B%0A%20%20%20%20%20%20%20%20const%20currentParticles%20%3D%20particlesContainer.children.length%3B%0A%20%20%20%20%20%20%20%20const%20targetParticles%20%3D%20width%20%3C%20768%20%3F%2020%20%3A%20width%20%3C%201200%20%3F%2035%20%3A%2050%3B%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20if%20%28currentParticles%20%21%3D%3D%20targetParticles%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20particlesContainer.innerHTML%20%3D%20%27%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20for%20%28let%20i%20%3D%200%3B%20i%20%3C%20targetParticles%3B%20i++%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20particle%20%3D%20document.createElement%28%27div%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20particle.className%20%3D%20%27particle%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20particle.style.left%20%3D%20Math.random%28%29%20*%20100%20+%20%27vw%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20particle.style.animationDelay%20%3D%20Math.random%28%29%20*%2020%20+%20%27s%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20particle.style.animationDuration%20%3D%20%28Math.random%28%29%20*%2010%20+%2015%29%20+%20%27s%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20particlesContainer.appendChild%28particle%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%0A%20%20%20%20window.addEventListener%28%27resize%27%2C%20adjustParticleCount%29%3B%0A%3C/script%3E%0A%3C/body%3E%0A%3C/html%3E'))</script>
+    <!DOCTYPE html>
+    <html lang="id">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>MikroTik RouterOS - Mengelola SERVICE dan Mengamankan Akses</title>
+        <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+        /* -------------------- Loading Screen -------------------- */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0f172a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
+        }
+
+        .loader {
+            --size: 250px;
+            --duration: 2s;
+            --logo-color: grey;
+            --background: linear-gradient(
+                0deg,
+                rgba(50, 50, 50, 0.2) 0%,
+                rgba(100, 100, 100, 0.2) 100%
+            );
+            height: var(--size);
+            aspect-ratio: 1;
+            position: relative;
+        }
+
+        .loader .box {
+            position: absolute;
+            background: rgba(100, 100, 100, 0.15);
+            background: var(--background);
+            border-radius: 50%;
+            border-top: 1px solid rgba(100, 100, 100, 1);
+            box-shadow: rgba(0, 0, 0, 0.3) 0px 10px 10px -0px;
+            backdrop-filter: blur(5px);
+            animation: ripple var(--duration) infinite ease-in-out;
+        }
+
+        .loader .box:nth-child(1) {
+            inset: 40%;
+            z-index: 99;
+        }
+
+        .loader .box:nth-child(2) {
+            inset: 30%;
+            z-index: 98;
+            border-color: rgba(100, 100, 100, 0.8);
+            animation-delay: 0.2s;
+        }
+
+        .loader .box:nth-child(3) {
+            inset: 20%;
+            z-index: 97;
+            border-color: rgba(100, 100, 100, 0.6);
+            animation-delay: 0.4s;
+        }
+
+        .loader .box:nth-child(4) {
+            inset: 10%;
+            z-index: 96;
+            border-color: rgba(100, 100, 100, 0.4);
+            animation-delay: 0.6s;
+        }
+
+        .loader .box:nth-child(5) {
+            inset: 0%;
+            z-index: 95;
+            border-color: rgba(100, 100, 100, 0.2);
+            animation-delay: 0.8s;
+        }
+
+        .loader .logo {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            place-content: center;
+            padding: 30%;
+        }
+
+        .loader .logo svg {
+            fill: var(--logo-color);
+            width: 100%;
+            animation: color-change var(--duration) infinite ease-in-out;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(1);
+                box-shadow: rgba(0, 0, 0, 0.3) 0px 10px 10px -0px;
+            }
+            50% {
+                transform: scale(1.3);
+                box-shadow: rgba(0, 0, 0, 0.3) 0px 30px 20px -0px;
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: rgba(0, 0, 0, 0.3) 0px 10px 10px -0px;
+            }
+        }
+
+        @keyframes color-change {
+            0% {
+                fill: var(--logo-color);
+            }
+            50% {
+                fill: white;
+            }
+            100% {
+                fill: var(--logo-color);
+            }
+        }
+
+        /* Hide content while loading */
+        body.loading {
+            overflow: hidden;
+        }
+
+        /* -------------------- Variables -------------------- */
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --accent-color: #06b6d4;
+            --success-color: #059669;
+            --warning-color: #d97706;
+            --danger-color: #dc2626;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #334155;
+            --bg-light: #f8fafc;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: #475569;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* -------------------- Backgrounds & Effects -------------------- */
+        .tech-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -3;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(37, 99, 235, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(220, 38, 38, 0.08) 0%, transparent 50%);
+        }
+
+        .circuit-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            opacity: 0.03;
+            background-image: 
+                linear-gradient(90deg, var(--primary-color) 1px, transparent 1px),
+                linear-gradient(var(--primary-color) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: circuitMove 20s linear infinite;
+        }
+
+        @keyframes circuitMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .tech-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: float linear infinite;
+        }
+
+        @keyframes float {
+            0% { 
+                transform: translateY(100vh) translateX(0px);
+                opacity: 0;
+            }
+            10% { 
+                opacity: 0.6;
+            }
+            90% { 
+                opacity: 0.6;
+            }
+            100% { 
+                transform: translateY(-100px) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        /* -------------------- Header -------------------- */
+        .header {
+            text-align: center;
+            padding: 100px 20px 80px;
+            background: linear-gradient(135deg, 
+                rgba(37, 99, 235, 0.1) 0%, 
+                rgba(6, 182, 212, 0.1) 50%, 
+                rgba(5, 150, 105, 0.1) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(37, 99, 235, 0.1),
+                transparent
+            );
+            animation: headerScan 10s linear infinite;
+        }
+
+        @keyframes headerScan {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .main-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color), var(--success-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            text-shadow: 0 0 50px rgba(37, 99, 235, 0.3);
+            animation: titleGlow 4s ease-in-out infinite alternate;
+            position: relative;
+        }
+
+        @keyframes titleGlow {
+            0% { filter: brightness(1); }
+            100% { filter: brightness(1.2); }
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .author-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
+            margin: 0 auto;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            animation: cardFloat 6s ease-in-out infinite alternate;
+        }
+
+        @keyframes cardFloat {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-10px); }
+        }
+
+        .card-header {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--accent-color);
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .author-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            text-align: left;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: var(--primary-color);
+            min-width: 80px;
+            margin-right: 15px;
+        }
+
+        .info-value {
+            color: var(--text-primary);
+            font-weight: 400;
+        }
+
+        /* -------------------- Container & Sections -------------------- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .section {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.05) 0%, 
+                rgba(255, 255, 255, 0.02) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+            position: relative;
+            backdrop-filter: blur(20px);
+            transition: all 0.4s ease;
+            animation: sectionSlide 0.8s ease-out;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .section:nth-child(even) {
+            animation: sectionSlideRight 0.8s ease-out;
+        }
+
+        @keyframes sectionSlide {
+            from { transform: translateX(-50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes sectionSlideRight {
+            from { transform: translateX(50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .section:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 12px 48px rgba(37, 99, 235, 0.2);
+            transform: translateY(-8px);
+        }
+
+        .section-title {
+            font-family: 'Inter', sans-serif;
+            color: var(--primary-color);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 30px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 2px;
+        }
+
+        /* -------------------- Code Terminal -------------------- */
+        .code-terminal {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            font-family: 'JetBrains Mono', monospace;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            overflow-x: auto; /* Allow horizontal scrolling */
+        }
+
+        .code-terminal::before {
+            content: '$ mikrotik@router:~';
+            color: var(--success-color);
+            font-weight: 600;
+            display: block;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .code-line {
+            color: var(--text-primary);
+            margin: 8px 0;
+            position: relative;
+            padding-left: 20px;
+            transition: all 0.3s ease;
+            opacity: 0;
+            font-family: 'JetBrains Mono', monospace;
+            white-space: pre; /* Preserve spaces and don't wrap */
+            display: block; /* Ensure block display for proper alignment */
+        }
+
+        .code-line.typing {
+            opacity: 1;
+            border-right: 2px solid var(--accent-color);
+            animation: blink-cursor 1s infinite;
+        }
+
+        .code-line.typed {
+            opacity: 1;
+            border-right: none;
+        }
+
+        @keyframes blink-cursor {
+            0%, 50% { border-color: var(--accent-color); }
+            51%, 100% { border-color: transparent; }
+        }
+
+        .code-line:hover {
+            background: rgba(37, 99, 235, 0.1);
+            padding-left: 25px;
+            border-radius: 6px;
+        }
+
+        .code-line::before {
+            content: '▶';
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+            font-size: 0.8rem;
+        }
+
+        /* Custom scrollbar for code terminals */
+        .code-terminal::-webkit-scrollbar {
+            height: 8px; /* Height for horizontal scrollbar */
+            background-color: rgba(15, 23, 42, 0.5); /* Dark background */
+        }
+
+        .code-terminal::-webkit-scrollbar-thumb {
+            background-color: var(--accent-color);
+            border-radius: 4px;
+        }
+
+        .code-terminal::-webkit-scrollbar-thumb:hover {
+            background-color: var(--primary-color);
+        }
+
+        .comment {
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .string {
+            color: var(--warning-color);
+            font-weight: 400;
+        }
+
+        .keyword {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* -------------------- Alert Boxes -------------------- */
+        .tech-alert,
+        .security-alert,
+        .conclusion-box {
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .tech-alert {
+            background: linear-gradient(135deg, 
+                rgba(37, 99, 235, 0.1), 
+                rgba(6, 182, 212, 0.1));
+            border: 1px solid var(--primary-color);
+            border-left: 4px solid var(--primary-color);
+            animation: alertPulse 3s ease-in-out infinite alternate;
+        }
+
+        .tech-alert::before {
+            content: '🔧 TEKNOLOGI INFO';
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: var(--bg-primary);
+            color: var(--primary-color);
+            padding: 5px 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 20px;
+            border: 1px solid var(--primary-color);
+        }
+
+        .security-alert {
+            background: linear-gradient(135deg, 
+                rgba(220, 38, 38, 0.1), 
+                rgba(217, 119, 6, 0.1));
+            border: 1px solid var(--danger-color);
+            border-left: 4px solid var(--danger-color);
+            animation: securityBlink 2s ease-in-out infinite alternate;
+        }
+
+        .security-alert::before {
+            content: '🛡️ KEAMANAN';
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: var(--bg-primary);
+            color: var(--danger-color);
+            padding: 5px 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 20px;
+            border: 1px solid var(--danger-color);
+        }
+
+        .conclusion-box {
+            background: linear-gradient(135deg, 
+                rgba(5, 150, 105, 0.1), 
+                rgba(37, 99, 235, 0.1));
+            border: 1px solid var(--success-color);
+            border-left: 4px solid var(--success-color);
+            animation: conclusionGlow 4s ease-in-out infinite alternate;
+        }
+
+        .conclusion-box::before {
+            content: '📝 KESIMPULAN';
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: var(--bg-primary);
+            color: var(--success-color);
+            padding: 5px 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 20px;
+            border: 1px solid var(--success-color);
+        }
+
+        @keyframes alertPulse {
+            0% { box-shadow: 0 0 20px rgba(37, 99, 235, 0.2); }
+            100% { box-shadow: 0 0 30px rgba(37, 99, 235, 0.4); }
+        }
+
+        @keyframes securityBlink {
+            0% { border-left-color: var(--danger-color); }
+            100% { border-left-color: var(--warning-color); }
+        }
+
+        @keyframes conclusionGlow {
+            0% { box-shadow: 0 0 20px rgba(5, 150, 105, 0.2); }
+            100% { box-shadow: 0 0 30px rgba(5, 150, 105, 0.4); }
+        }
+
+        /* -------------------- Bibliography -------------------- */
+        .bibliography {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.08), 
+                rgba(255, 255, 255, 0.04));
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 60px;
+            backdrop-filter: blur(20px);
+            animation: biblioFade 1.5s ease-out;
+        }
+
+        @keyframes biblioFade {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .bibliography h3 {
+            color: var(--accent-color);
+            font-family: 'Inter', sans-serif;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .bibliography ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .bibliography li {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            position: relative;
+            padding-left: 50px;
+        }
+
+        .bibliography li:hover {
+            color: var(--text-primary);
+            transform: translateX(10px);
+            border-color: var(--primary-color);
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(6, 182, 212, 0.05));
+        }
+
+        .bibliography a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            word-break: break-all;
+        }
+
+        .bibliography a:hover {
+            color: var(--accent-color);
+            text-decoration: underline;
+        }
+
+        /* -------------------- Progress bar -------------------- */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color), var(--success-color));
+            z-index: 1000;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+        }
+
+        /* -------------------- Portfolio Button -------------------- */
+        .portfolio-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: var(--text-primary);
+            border: none;
+            border-radius: 50px;
+            padding: 15px 25px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(37, 99, 235, 0.4);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            overflow: hidden;
+            text-decoration: none;
+        }
+
+        .portfolio-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.6);
+        }
+
+        .portfolio-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.2), 
+                transparent);
+            animation: shineEffect 3s infinite;
+        }
+
+        .portfolio-icon {
+            font-size: 1.2rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes shineEffect {
+            0% { left: -100%; }
+            20% { left: 100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .attention-ripple {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            border-radius: 50px;
+            border: 2px solid var(--accent-color);
+            animation: ripple 2s infinite;
+            opacity: 0;
+        }
+
+        @keyframes ripple {
+            0% {
+                width: 100%;
+                height: 100%;
+                opacity: 0.8;
+            }
+            100% {
+                width: 200%;
+                height: 200%;
+                opacity: 0;
+            }
+        }
+
+        /* Styling untuk container gambar */
+        .image-container {
+            margin: 30px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
+            max-width: 100%;
+            position: relative;
+        }
+
+        .image-container:hover {
+            transform: scale(1.02);
+            box-shadow: 0 15px 40px rgba(37, 99, 235, 0.4);
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: all 0.4s ease;
+        }
+
+        .image-container:hover img {
+            filter: brightness(1.1);
+        }
+
+        .image-caption {
+            background: linear-gradient(to top, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.7), transparent);
+            padding: 15px 20px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .image-container:hover .image-caption {
+            transform: translateY(0);
+        }
+
+        /* -------------------- Responsive -------------------- */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2.5rem;
+            }
+            
+            .section {
+                padding: 25px 20px;
+                margin: 30px 0;
+            }
+            
+            .container {
+                padding: 40px 15px;
+            }
+
+            .code-terminal {
+                padding: 20px;
+                font-size: 0.9rem;
+            }
+
+            .author-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .portfolio-button {
+                bottom: 20px;
+                right: 20px;
+                padding: 12px 20px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* -------------------- Animations -------------------- */
+        .fade-in {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        </style>
+    </head>
+    <body class="loading">
+        <!-- Preloader -->
+        <div id="preloader">
+            <div class="loader">
+                <div class="box">
+                    <div class="logo">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 94 94" class="svg">
+                            <path d="M38.0481 4.82927C38.0481 2.16214 40.018 0 42.4481 0H51.2391C53.6692 0 55.6391 2.16214 55.6391 4.82927V40.1401C55.6391 48.8912 53.2343 55.6657 48.4248 60.4636C43.6153 65.2277 36.7304 67.6098 27.7701 67.6098C18.8099 67.6098 11.925 65.2953 7.11548 60.6663C2.37183 56.0036 3.8147e-06 49.2967 3.8147e-06 40.5456V4.82927C3.8147e-06 2.16213 1.96995 0 4.4 0H13.2405C15.6705 0 17.6405 2.16214 17.6405 4.82927V39.1265C17.6405 43.7892 18.4805 47.2018 20.1605 49.3642C21.8735 51.5267 24.4759 52.6079 27.9678 52.6079C31.4596 52.6079 34.0127 51.5436 35.6268 49.4149C37.241 47.2863 38.0481 43.8399 38.0481 39.0758V4.82927Z"></path>
+                            <path d="M86.9 61.8682C86.9 64.5353 84.9301 66.6975 82.5 66.6975H73.6595C71.2295 66.6975 69.2595 64.5353 69.2595 61.8682V4.82927C69.2595 2.16214 71.2295 0 73.6595 0H82.5C84.9301 0 86.9 2.16214 86.9 4.82927V61.8682Z"></path>
+                            <path d="M2.86102e-06 83.2195C2.86102e-06 80.5524 1.96995 78.3902 4.4 78.3902H83.6C86.0301 78.3902 88 80.5524 88 83.2195V89.1707C88 91.8379 86.0301 94 83.6 94H4.4C1.96995 94 0 91.8379 0 89.1707L2.86102e-06 83.2195Z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+            </div>
+        </div>
+
+        <!-- Scroll Progress -->
+        <div class="scroll-progress" id="scrollProgress"></div>
+
+        <!-- Tech Background -->
+        <div class="tech-bg"></div>
+        <div class="circuit-pattern"></div>
+        <div class="tech-particles" id="techParticles"></div>
+
+        <!-- Header -->
+        <div class="header">
+            <h1 class="main-title">MIKROTIK ROUTEROS</h1>
+            <div class="subtitle">SERVICE IP pada MikroTik RouterOS</div>
+            <div class="subtitle">Memahami, Mengonfigurasi, dan Mengamankan SERVICE IP</div>
+            
+            <div class="author-card">
+                <div class="card-header">Informasi Penulis</div>
+                <div class="author-info">
+                    <div class="info-item">
+                        <span class="info-label">Penulis:</span>
+                        <span class="info-value">Jovian Ekasakta</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Guru:</span>
+                        <span class="info-value">Arief Wahyudin</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Kelas:</span>
+                        <span class="info-value">XI TJKT 03</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Sekolah:</span>
+                        <span class="info-value">Dwija Bhakti 01 Jombang</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Portfolio Button -->
+        <a href="https://jovian-portofolio02.vercel.app/" target="_blank" class="portfolio-button">
+            <span class="portfolio-icon">🚀</span>
+            Lihat Portfolio Saya
+            <div class="attention-ripple"></div>
+        </a>
+
+        <div class="container">
+            <!-- Section 1 -->
+            <div class="section fade-in">
+                <h2 class="section-title">1. PENGENALAN SERVICE IP PADA MIKROTIK</h2>
+                
+                <!-- Container Gambar untuk Section 1 -->
+                <div class="image-container">
+                <img src="no 1-ink.jpeg" alt="SERVICE IP pada MikroTik RouterOS">
+                <div class="image-caption">Tampilan halaman SERVICE IP pada MikroTik RouterOS</div>
+                </div>
+                
+                <p>Dari sumber NetworkTik (2024), MikroTik RouterOS memiliki beberapa SERVICE yang secara default aktif untuk tujuan administrasi. SERVICE-SERVICE ini memungkinkan administrator untuk mengakses dan mengelola router melalui berbagai protokol dan metode.</p>
+                
+                <p>Untuk melihat SERVICE yang tersedia pada RouterOS, gunakan perintah berikut:</p>
+                
+                <div class="code-terminal">
+                    <div class="code-line"><span class="keyword">/ip service print</span></div>
+                    <div class="code-line comment"># Menampilkan daftar semua SERVICE yang tersedia</div>
+                </div>
+                
+                <p>Dari sumber System Zone (2021), secara default MikroTik RouterOS mengaktifkan beberapa SERVICE untuk mengakses RouterOS untuk tujuan administrasi. SERVICE-SERVICE ini meliputi:</p>
+                
+                <ul style="margin-left: 20px; margin-bottom: 20px;">
+                    <li><strong>API</strong> - SERVICE untuk akses program eksternal menggunakan RouterOS API</li>
+                    <li><strong>FTP</strong> - SERVICE untuk transfer file ke dan dari router</li>
+                    <li><strong>SSH</strong> - SERVICE untuk akses command line aman</li>
+                    <li><strong>Telnet</strong> - SERVICE untuk akses command line (tidak aman)</li>
+                    <li><strong>Winbox</strong> - SERVICE untuk aplikasi manajemen berbasis GUI Winbox</li>
+                    <li><strong>WWW</strong> - SERVICE untuk akses WebFig (antarmuka web)</li>
+                    <li><strong>WWW-SSL</strong> - SERVICE untuk akses WebFig melalui HTTPS</li>
+                    <li><strong>API-SSL</strong> - SERVICE untuk akses API melalui koneksi aman</li>
+                </ul>
+                
+                <p>Dari sumber MikroTik Documentation (2023), setiap SERVICE memiliki port default yang ditugaskan sebagai berikut:</p>
+                
+                <div class="code-terminal">
+                    <div class="code-line comment"># Port default untuk SERVICE MikroTik RouterOS</div>
+                    <div class="code-line">api         - port 8728</div>
+                    <div class="code-line">api-ssl     - port 8729</div>
+                    <div class="code-line">ftp         - port 21</div>
+                    <div class="code-line">ssh         - port 22</div>
+                    <div class="code-line">telnet      - port 23</div>
+                    <div class="code-line">winbox      - port 8291</div>
+                    <div class="code-line">www         - port 80</div>
+                    <div class="code-line">www-ssl     - port 443</div>
+                </div>
+                
+                <div class="tech-alert">
+                    <p>Dari sumber NetworkTik (2024), setiap SERVICE di MikroTik RouterOS memiliki properti konfigurasi yang sama termasuk:</p>
+                    <ul style="margin-left: 10px; margin-top: 10px;">
+                        <li><strong>name</strong> - Nama SERVICE</li>
+                        <li><strong>port</strong> - Port TCP yang digunakan SERVICE</li>
+                        <li><strong>address</strong> - Alamat IP atau subnet yang diizinkan mengakses SERVICE</li>
+                        <li><strong>certificate</strong> - Sertifikat untuk SERVICE berbasis SSL</li>
+                        <li><strong>disabled</strong> - Status aktivasi SERVICE</li>
+                        <li><strong>tls-version</strong> - Versi TLS yang diizinkan (untuk SERVICE berbasis SSL)</li>
+                    </ul>
+                </div>
+
+                <div class="conclusion-box">
+                    <p><strong>Kesimpulan:</strong> Dari 3 pendapat tersebut dapat disimpulkan bahwa MikroTik RouterOS menyediakan berbagai SERVICE IP untuk keperluan administrasi dan manajemen router. Setiap SERVICE memiliki fungsi spesifik, port default, dan properti konfigurasi yang dapat disesuaikan. Memahami SERVICE-SERVICE ini sangat penting untuk pengelolaan router secara efektif dan aman.</p>
+                </div>
+            </div>
+
+            <!-- Section 2 -->
+            <div class="section fade-in">
+                <h2 class="section-title">2. MENGELOLA SERVICE IP</h2>
+                
+                <!-- Container Gambar untuk Section 2 -->
+                <div class="image-container">
+                <img src="no 2-ink.jpeg" alt="Mengelola SERVICE IP pada MikroTik">
+                <div class="image-caption">Tampilan konfigurasi SERVICE IP pada MikroTik RouterOS</div>
+                </div>
+                
+                <p>Dari sumber NetworkTik (2024), mengelola SERVICE IP pada MikroTik RouterOS sangat penting untuk meningkatkan keamanan router. Praktik terbaik keamanan mengharuskan menonaktifkan SERVICE yang tidak digunakan untuk mengurangi permukaan serangan.</p>
+                
+                <p>Untuk menonaktifkan SERVICE yang tidak digunakan, gunakan perintah berikut:</p>
+                
+                <div class="code-terminal">
+                    <div class="code-line"><span class="keyword">/ip service disable</span> telnet,ftp</div>
+                    <div class="code-line comment"># Menonaktifkan SERVICE telnet dan ftp</div>
+                </div>
+                
+                <p>Atau dengan menentukan nomor SERVICE:</p>
+                
+                <div class="code-terminal">
+                    <div class="code-line"><span class="keyword">/ip service disable</span> numbers=1,2</div>
+                    <div class="code-line comment"># Menonaktifkan SERVICE dengan nomor 1 dan 2</div>
+                </div>
+                
+                <p>Dari sumber MikroTik Documentation (2023), untuk mengaktifkan kembali SERVICE yang telah dinonaktifkan:</p>
+                
+                <div class="code-terminal">
+                    <div class="code-line"><span class="keyword">/ip service enable</span> ssh</div>
+                    <div class="code-line comment"># Mengaktifkan SERVICE SSH</div>
+                </div>
+                
+                <p>Untuk mengubah port default SERVICE dan meningkatkan keamanan:</p>
+                
+                <div class="code-terminal">
+                    <div class="code-line"><span class="keyword">/ip service set</span> ssh port=2222</div>
+                    <div class="code-line comment"># Mengubah port SSH dari 22 menjadi 2222</div>
+                    <div class="code-line"><span class="keyword">/ip service set</span> www port=8081</div>
+                    <div class="code-line comment"># Mengubah port HTTP dari 80 menjadi 8081</div>
+                    <div class="code-line"><span class="keyword">/ip service set</span> winbox port=9090</div>
+                    <div class="code-line comment"># Mengubah port Winbox dari 8291 menjadi 9090</div>
+                </div>
+
+                <p>Dari sumber System Zone (2021), administrator jaringan juga dapat membatasi SERVICE agar hanya dapat diakses dari alamat IP atau subnet tertentu:</p>
+                
+                <div class="code-terminal">
+                    <div class="code-line"><span class="keyword">/ip service set</span> ssh address=192.168.88.0/24</div>
+                    <div class="code-line comment"># Membatasi akses SSH hanya dari jaringan 192.168.88.0/24</div>
+                    <div class="code-line"><span class="keyword">/ip service set</span> winbox address=192.168.88.0/24,10.0.0.5</div>
+                    <div class="code-line comment"># Membatasi akses Winbox dari jaringan 192.168.88.0/24 dan alamat 10.0.0.5</div>
+                </div>
+                
+                <div class="security-alert">
+                    <p>Dari sumber MikroTik Documentation (2024), SERVICE telnet dan ftp sebaiknya dinonaktifkan karena mengirim kredensial dalam teks biasa (tidak terenkripsi). Sebagai gantinya, gunakan SSH untuk akses command line dan SFTP untuk transfer file. Jika memerlukan akses berbasis web, gunakan www-ssl (HTTPS) daripada www (HTTP) untuk enkripsi komunikasi.</p>
+                </div>
+                
+                <p>Untuk menyetel SERVICE www-ssl dengan sertifikat:</p>
+                
+                <div class="code-terminal">
+                    <div class="code-line"><span class="keyword">/ip service set</span> www-ssl certificate=my-cert disabled=no</div>
+                    <div class="code-line comment"># Mengaktifkan HTTPS dengan sertifikat tertentu</div>
+                </div>
+                
+                <div class="tech-alert">
+                    <p>Dari sumber System Zone (2021), beberapa administrator MikroTik RouterOS memodifikasi port SERVICE login dengan port yang tidak digunakan. Namun ini memiliki kerugian karena Anda mungkin lupa nomor port yang dimodifikasi dan tidak dapat masuk ke Router MikroTik sampai mengingat nomor port yang ditetapkan. Pastikan untuk mendokumentasikan perubahan port dengan baik.</p>
+                </div>
+
+                <div class="conclusion-box">
+                    <p><strong>Kesimpulan:</strong> Dari 4 pendapat tersebut dapat disimpulkan bahwa pengelolaan SERVICE IP pada MikroTik RouterOS melibatkan aktivasi/deaktivasi SERVICE, mengubah port default, dan membatasi akses berdasarkan alamat IP. Praktik terbaik keamanan mengharuskan menonaktifkan SERVICE yang tidak digunakan (terutama yang tidak terenkripsi seperti telnet dan ftp), mengubah port default, dan membatasi akses ke SERVICE hanya dari jaringan yang tepercaya.</p>
+                </div>
+            </div>
+
+            <!-- Section 3 -->
+            <div class="section fade-in">
+                <h2 class="section-title">3. SERVICE API DAN API-SSL</h2>
+                
+                <p>Dari sumber MikroTik Documentation (2024), API (Application Programming Interface) MikroTik memungkinkan pengembang untuk membuat aplikasi yang dapat berkomunikasi dengan RouterOS. API MikroTik menggunakan protokol berbasis teks sederhana yang disebut protokol API RouterOS.</p>
+                
+                <p>RouterOS menyediakan dua SERVICE untuk akses API:</p>
+                <ul style="margin-left: 20px; margin-bottom: 20px;">
+                    <li><strong>api</strong> - SERVICE API tanpa enkripsi (port default 8728)</li>
+                    <li><strong>api-ssl</strong> - SERVICE API dengan enkripsi SSL/TLS (port default 8729)</li>
+                </ul>
+                
+                <p>Untuk memeriksa status SERVICE API:</p>
+                
+                <div class="code-terminal">
+                    <div class="code-line"><span class="keyword">/ip service print</span> where name="api" || name="api-ssl"</div>
+                </div>
+                
+                <p>Dari sumber RouterOS API Documentation (2023), untuk mengonfigurasi SERVICE API:</p>
+                
+                <div class="code-terminal">
+                    <div class="code-line comment"># Mengaktifkan API dengan pembatasan alamat IP</div>
+                    <div class="code-line"><span class="keyword">/ip service set</span> api address=192.168.88.0/24 disabled=no</div>
+                    
+                    <div class="code-line comment"># Mengaktifkan API-SSL dengan sertifikat</div>
+                    <div class="code-line"><span class="keyword">/ip service set</span> api-ssl certificate=my-cert address=192.168.88.0/24 disabled=no</div>
+                </div>
+                
+                <p>Dari sumber MikroTik API Tutorial (2022), SERVICE API memungkinkan berbagai fungsi otomatisasi dan integrasi, termasuk:</p>
+                <ul style="margin-left: 20px; margin-bottom: 20px;">
+                    <li>Pemantauan perangkat MikroTik secara terpusat</li>
+                    <li>Otomatisasi perubahan konfigurasi pada banyak perangkat</li>
+                    <li>Integrasi dengan sistem pemantauan jaringan</li>
+                    <li>Pembuatan antarmuka pengguna kustom</li>
+                    <li>Pengembangan alat administrasi jaringan</li>
+                </ul>
+                
+                <p>Contoh sederhana skrip API menggunakan Python:</p>
+                
+                <div class="code-terminal">
+                    <div class="code-line comment"># Contoh skrip Python menggunakan API MikroTik</div>
+                    <div class="code-line">import routeros_api</div>
+                    <div class="code-line"></div>
+                    <div class="code-line">connection = routeros_api.RouterOsApiPool('192.168.88.1',</div>
+                    <div class="code-line">                                       username='admin',</div>
+                    <div class="code-line">                                       password='password',</div>
+                    <div class="code-line">                                       port=8728,</div>
+                    <div class="code-line">                                       plaintext_login=True)</div>
+                    <div class="code-line">api = connection.get_api()</div>
+                    <div class="code-line"></div>
+                    <div class="code-line">list_address = api.get_resource('/ip/address')</div>
+                    <div class="code-line">addresses = list_address.get()</div>
+                    <div class="code-line">for address in addresses:</div>
+                    <div class="code-line">    print(address)</div>
+                </div>
+                
+                <div class="security-alert">
+                    <p>Dari sumber Network Security Best Practices (2023), SERVICE API tanpa SSL mengirimkan kredensial dan data dalam bentuk tidak terenkripsi. Untuk keamanan yang lebih baik, selalu gunakan api-ssl daripada api, terutama jika API diakses melalui jaringan yang tidak tepercaya. Batasi akses API hanya ke alamat IP administrator yang tepercaya.</p>
+                </div>
+
+                <div class="conclusion-box">
+                    <p><strong>Kesimpulan:</strong> Dari 4 pendapat tersebut dapat disimpulkan bahwa SERVICE API dan API-SSL MikroTik menyediakan antarmuka yang kuat untuk otomatisasi dan integrasi dengan sistem lain. API-SSL memberikan keamanan tambahan melalui enkripsi dan harus digunakan daripada API biasa ketika memungkinkan. Membatasi akses API hanya ke alamat IP tertentu juga merupakan praktik keamanan penting untuk mencegah akses tidak sah.</p>
+                </div>
+            </div>
+
+            <!-- Section 4 -->
+            <div class="section fade-in">
+                <h2 class="section-title">4. SERVICE WWW DAN WWW-SSL</h2>
+                
+                <!-- Container Gambar untuk Section 4 -->
+                <div class="image-container">
+                <img src="no 1-ink.jpeg" alt="WebFig MikroTik">
+                <div class="image-caption">Tampilan WebFig (antarmuka web) MikroTik RouterOS</div>
+                </div>
+                
+                <p>Dari sumber MikroTik Documentation (2024), SERVICE www dan www-ssl memungkinkan akses ke antarmuka web MikroTik RouterOS yang disebut WebFig. WebFig menyediakan antarmuka grafis berbasis web untuk mengelola router tanpa memerlukan aplikasi Winbox.</p>
+                
+                <p>RouterOS menyediakan dua SERVICE untuk akses web:</p>
+                <ul style="margin-left: 20px; margin-bottom: 20px;">
+                    <li><strong>www</strong> - SERVICE HTTP tanpa enkripsi (port default 80)</li>
+                    <li><strong>www-ssl</strong> - SERVICE HTTPS dengan enkripsi SSL/TLS (port default 443)</li>
+                </ul>
+                
+                <p>Untuk memeriksa status SERVICE web:</p>
+                
+                <div class="code-terminal">
+                    <div class="code-line"><span class="keyword">/ip service print</span> where name="www" || name="www-ssl"</div>
+                </div>
+                
+                <p>Dari sumber RouterOS WebFig Guide (2023), untuk mengonfigurasi SERVICE www-ssl dengan sertifikat:</p>
+                
+                <div class="code-terminal">
+                    <div class="code-line comment"># Membuat sertifikat self-signed</div>
+                    <div class="code-line"><span class="keyword">/certificate add</span> name=webfig-cert common-name=router.local key-usage=tls-server</div>
+                    <div class="code-line"><span class="keyword">/certificate sign</span> webfig-cert</div>
+                    
+                    <div class="code-line comment"># Mengaktifkan www-ssl dengan sertifikat</div>
+                    <div class="code-line"><span class="keyword">/ip service set</span> www-ssl certificate=webfig-cert disabled=no</div>
+                    
+                    <div class="code-line comment"># Menonaktifkan www (HTTP) untuk keamanan</div>
+                    <div class="code-line"><span class="keyword">/ip service set</span> www disabled=yes</div>
+                </div>
+                
+                <p>Dari sumber MikroTik Web Access Security (2022), WebFig menyediakan hampir semua fungsi yang tersedia di Winbox, termasuk:</p>
+                <ul style="margin-left: 20px; margin-bottom: 20px;">
+                    <li>Konfigurasi interface jaringan</li>
+                    <li>Manajemen routing</li>
+                    <li>Konfigurasi firewall dan NAT</li>
+                    <li>Manajemen pengguna dan grup</li>
+                    <li>Pemantauan sistem dan jaringan</li>
+                    <li>Manajemen SERVICE dan protokol</li>
+                </ul>
+                
+                <p>Untuk membatasi akses ke SERVICE web berdasarkan alamat IP:</p>
+                
+                <div class="code-terminal">
+                    <div class="code-line"><span class="keyword">/ip service set</span> www-ssl address=192.168.88.0/24,10.0.0.5</div>
+                    <div class="code-line comment"># Membatasi akses HTTPS hanya dari jaringan 192.168.88.0/24 dan alamat 10.0.0.5</div>
+                </div>
+                
+                <div class="security-alert">
+                    <p>Dari sumber Network Security Best Practices (2023), SERVICE www (HTTP) mengirimkan kredensial dan data dalam bentuk tidak terenkripsi yang dapat dicegat dan dibaca oleh pihak tidak berwenang. Untuk keamanan yang lebih baik, gunakan www-ssl (HTTPS) yang mengenkripsi semua lalu lintas antara browser dan router. Jika memungkinkan, nonaktifkan SERVICE www dan hanya gunakan www-ssl.</p>
+                </div>
+                
+                <p>Dari sumber MikroTik TLS Configuration (2023), untuk meningkatkan keamanan www-ssl dengan membatasi versi TLS:</p>
+                
+                <div class="code-terminal">
+                    <div class="code-line"><span class="keyword">/ip service set</span> www-ssl tls-version=only-1.2,only-1.3</div>
+                    <div class="code-line comment"># Membatasi www-ssl hanya menggunakan TLS v1.2 dan v1.3 (yang lebih aman)</div>
+                </div>
+
+                <div class="conclusion-box">
+                    <p><strong>Kesimpulan:</strong> Dari 5 pendapat tersebut dapat disimpulkan bahwa SERVICE www dan www-ssl MikroTik menyediakan antarmuka web untuk administrasi router melalui WebFig. Untuk keamanan, sebaiknya menggunakan www-ssl dengan sertifikat yang valid dan menonaktifkan SERVICE www biasa. Selain itu, membatasi akses berdasarkan alamat IP dan menggunakan versi TLS terbaru juga merupakan praktik keamanan penting untuk melindungi akses web ke router.</p>
+                </div>
+            </div>
+
+            <!-- Section 5 -->
+            <div class="section fade-in">
+                <h2 class="section-title">5. SERVICE WINBOX</h2>
+                
+                <!-- Container Gambar untuk Section 5 -->
+                <div class="image-container">
+                <img src="no 1-ink.jpeg" alt="Aplikasi Winbox MikroTik">
+                <div class="image-caption">Aplikasi Winbox untuk manajemen MikroTik RouterOS</div>
+                </div>
+                
+                <p>Dari sumber MikroTik Documentation (2024), Winbox adalah utilitas administrasi berbasis GUI Windows yang digunakan untuk mengonfigurasi MikroTik RouterOS. SERVICE winbox di menu IP Service mengontrol akses ke protokol Winbox pada router.</p>
+                
+                <p>Dari sumber Winbox Security Guide (2023), SERVICE Winbox menggunakan port TCP 8291 secara default dan menyediakan antarmuka grafis yang kaya fitur untuk mengelola router MikroTik. Winbox dapat terhubung ke router melalui:</p>
+                <ul style="margin-left: 20px; margin-bottom: 20px;">
+                    <li><strong>IP Address</strong> - Koneksi standar melalui jaringan IP</li>
+                    <li><strong>MAC Address</strong> - Koneksi langsung melalui Layer 2 (harus berada di jaringan lokal yang sama)</li>
+                </ul>
+                
+                <p>Untuk memeriksa status SERVICE Winbox:</p>
+                
+                <div class="code-terminal">
+                    <div class="code-line"><span class="keyword">/ip service print</span> where name="winbox"</div>
+                </div>
+                
+                <p>Untuk mengonfigurasi SERVICE Winbox:</p>
+                
+                <div class="code-terminal">
+                    <div class="code-line comment"># Mengubah port Winbox</div>
+                    <div class="code-line"><span class="keyword">/ip service set</span> winbox port=9090</div>
+                    
+                    <div class="code-line comment"># Membatasi akses Winbox berdasarkan alamat IP</div>
+                    <div class="code-line"><span class="keyword">/ip service set</span> winbox address=192.168.88.0/24,10.0.0.5</div>
+                </div>
+                
+                <p>Dari sumber RouterOS Mac Access Guide (2022), akses Winbox melalui MAC dapat dinonaktifkan untuk keamanan tambahan. Ini dapat dilakukan melalui:</p>
+                
+                <div class="code-terminal">
+                    <div class="code-line comment"># Menonaktifkan akses Winbox via MAC</div>
+                    <div class="code-line"><span class="keyword">/tool mac-server set</span> allowed-interface-list=none</div>
+                    <div class="code-line"><span class="keyword">/tool mac-server mac-winbox set</span> allowed-interface-list=none</div>
+                </div>
+                
+                <div class="security-alert">
+                    <p>Dari sumber MikroTik Security Recommendations (2023), Winbox mengenkripsi kata sandi selama transmisi tetapi bukan seluruh sesi. Untuk akses jarak jauh yang aman, sebaiknya gunakan Winbox melalui koneksi VPN atau SSH tunnel. Selain itu, sebaiknya ubah port default Winbox dan batasi akses hanya ke alamat IP administrator yang tepercaya.</p>
+                </div>
+                
+                <p>Dari sumber Winbox Advanced Configuration (2024), komunikasi Winbox dapat dienkripsi menggunakan fitur "Secure Mode" di aplikasi Winbox. Ketika menggunakan mode ini, pastikan SERVICE winbox di router dikonfigurasi dengan benar.</p>
+                
+                <p>Untuk mengakses Winbox secara jarak jauh dengan aman melalui SSH tunnel:</p>
+                
+                <div class="code-terminal">
+                    <div class="code-line comment"># Pada komputer Windows dengan Putty:</div>
+                    <div class="code-line">1. Buat koneksi SSH ke router MikroTik</div>
+                    <div class="code-line">2. Di Putty, konfigurasi tunneling: Source port 9090, Destination 127.0.0.1:8291</div>
+                    <div class="code-line">3. Buka Winbox dan hubungkan ke 127.0.0.1:9090</div>
+                </div>
+
+                <div class="conclusion-box">
+                    <p><strong>Kesimpulan:</strong> Dari 5 pendapat tersebut dapat disimpulkan bahwa SERVICE Winbox adalah metode administrasi MikroTik yang populer karena antarmuka grafisnya yang intuitif. Untuk keamanan, praktik terbaik meliputi mengubah port default, membatasi akses berdasarkan alamat IP, menonaktifkan akses MAC jika tidak diperlukan, dan menggunakan SSH tunnel untuk akses jarak jauh. Meskipun Winbox mengenkripsi kata sandi, tidak semua lalu lintas terenkripsi, sehingga harus digunakan dengan hati-hati di jaringan yang tidak aman.</p>
+                </div>
+            </div>
+
+            <!-- Section 6 -->
+            <div class="section fade-in">
+                <h2 class="section-title">6. SERVICE SSH, TELNET, DAN FTP</h2>
+                
+                <!-- Container Gambar untuk Section 6 -->
+                <div class="image-container">
+                <img src="no 2-ink.jpeg" alt="Terminal SSH MikroTik">
+                <div class="image-caption">Terminal SSH untuk mengakses MikroTik RouterOS</div>
+                </div>
+                
+                <p>Dari sumber MikroTik Documentation (2024), RouterOS menyediakan beberapa SERVICE untuk akses command line dan transfer file:</p>
+                <ul style="margin-left: 20px; margin-bottom: 20px;">
+                    <li><strong>SSH</strong> - Akses command line terenkripsi (port default 22)</li>
+                    <li><strong>Telnet</strong> - Akses command line tidak terenkripsi (port default 23)</li>
+                    <li><strong>FTP</strong> - Transfer file tidak terenkripsi (port default 21)</li>
+                </ul>
+                
+                <p>Untuk memeriksa status SERVICE ini:</p>
+                
+                <div class="code-terminal">
+                    <div class="code-line"><span class="keyword">/ip service print</span> where name="ssh" || name="telnet" || name="ftp"</div>
+                </div>
+                
+                <p>Dari sumber RouterOS CLI Access Guide (2023), SSH (Secure Shell) adalah metode yang direkomendasikan untuk akses command line karena mengenkripsi semua lalu lintas termasuk kredensial login. Untuk mengonfigurasi SSH:</p>
+                
+                <div class="code-terminal">
+                    <div class="code-line comment"># Mengaktifkan SSH dengan port yang diubah</div>
+                    <div class="code-line"><span class="keyword">/ip service set</span> ssh port=2222 address=192.168.88.0/24 disabled=no</div>
+                    
+                    <div class="code-line comment"># Mengonfigurasi algoritma enkripsi SSH</div>
+                    <div class="code-line"><span class="keyword">/ip ssh set</span> strong-crypto=yes</div>
+                </div>
+                
+                <div class="security-alert">
+                    <p>Dari sumber Network Security Best Practices (2023), SERVICE telnet dan ftp harus dinonaktifkan karena mengirimkan semua data, termasuk nama pengguna dan kata sandi, dalam bentuk teks biasa yang tidak terenkripsi. Gunakan SSH sebagai pengganti telnet dan SFTP (yang berjalan melalui SSH) sebagai pengganti FTP. Untuk menonaktifkan SERVICE yang tidak aman:</p>
+                    <div class="code-terminal">
+                        <div class="code-line"><span class="keyword">/ip service set</span> telnet disabled=yes</div>
+                        <div class="code-line"><span class="keyword">/ip service set</span> ftp disabled=yes</div>
+                    </div>
+                </div>
+                
+                <p>Dari sumber SSH Key Authentication Guide (2022), untuk meningkatkan keamanan SSH, Anda dapat menggunakan otentikasi kunci publik daripada kata sandi:</p>
+                
+                <div class="code-terminal">
+                    <div class="code-line comment"># Mengimpor kunci publik SSH untuk pengguna</div>
+                    <div class="code-line"><span class="keyword">/user ssh-keys import</span> user=admin public-key-file=id_rsa.pub</div>
+                </div>
+                
+                <p>Dari sumber MikroTik CLI Scripting (2023), SSH juga memungkinkan eksekusi skrip jarak jauh untuk otomatisasi:</p>
+                
+                <div class="code-terminal">
+                    <div class="code-line comment"># Contoh mengeksekusi perintah jarak jauh melalui SSH</div>
+                    <div class="code-line">ssh admin@192.168.88.1 "/system resource print"</div>
+                </div>
+                
+                <p>Untuk transfer file dengan aman menggunakan SFTP (melalui SSH):</p>
+                
+                <div class="code-terminal">
+                    <div class="code-line comment"># Pada komputer Linux/Mac</div>
+                    <div class="code-line">sftp admin@192.168.88.1</div>
+                    <div class="code-line">get backup.backup</div>
+                    <div class="code-line">put config.rsc</div>
+                    
+                    <div class="code-line comment"># Atau menggunakan aplikasi SFTP seperti FileZilla, WinSCP, dll.</div>
+                </div>
+
+                <div class="conclusion-box">
+                    <p><strong>Kesimpulan:</strong> Dari 5 pendapat tersebut dapat disimpulkan bahwa SSH adalah SERVICE yang direkomendasikan untuk akses command line dan transfer file ke MikroTik RouterOS, sementara telnet dan FTP sebaiknya dinonaktifkan karena masalah keamanan. Penggunaan otentikasi kunci SSH daripada kata sandi, mengubah port default, dan membatasi akses berdasarkan alamat IP adalah praktik terbaik untuk mengamankan akses SSH. SSH juga memungkinkan otomatisasi dan eksekusi skrip jarak jauh yang berguna untuk administrasi jaringan.</p>
+                </div>
+            </div>
+
+
+            <!-- Section 7: Pengujian -->
+    <div class="section fade-in">
+        <h2 class="section-title">7. PENGUJIAN KONFIGURASI SERVICE IP</h2>
+        
+        <p>Setelah mempelajari berbagai jenis SERVICE IP pada MikroTik RouterOS dan cara mengonfigurasinya, pada bagian ini kita akan melakukan pengujian langsung terhadap perubahan konfigurasi yang telah dilakukan. Pengujian ini bertujuan untuk memverifikasi bahwa perubahan konfigurasi SERVICE berhasil diterapkan dan layanan masih dapat diakses dengan benar.</p>
+
+        <h3 style="color: var(--primary-color); margin-top: 30px; margin-bottom: 15px;">7.1 Pengujian Perubahan Port Winbox</h3>
+        
+        <!-- Container Gambar untuk Pengujian Winbox - Konfigurasi -->
+        <div class="image-container">
+        <img src="no 7.1-ink.jpeg" alt="Mengubah Port Winbox MikroTik">
+        <div class="image-caption">Mengubah port default Winbox dari 8291 menjadi 2025</div>
+        </div>
+        
+        <p>Pada pengujian ini, kita akan mengubah port default Winbox dari 8291 menjadi 2025, kemudian menguji akses ke router menggunakan port baru tersebut.</p>
+        
+        <p><strong>Langkah 1:</strong> Mengubah port Winbox menggunakan CLI dengan perintah berikut:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword">/ip service print</span></div>
+            <div class="code-line comment"># Melihat daftar SERVICE saat ini dan port yang digunakan</div>
+            <div class="code-line"><span class="keyword">/ip service set</span> winbox port=2025</div>
+            <div class="code-line comment"># Mengubah port Winbox dari 8291 menjadi 2025</div>
+            <div class="code-line"><span class="keyword">/ip service print</span></div>
+            <div class="code-line comment"># Memverifikasi perubahan port Winbox</div>
+        </div>
+        
+       
+        
+        <!-- Container Gambar untuk Pengujian Winbox - Akses -->
+        <div class="image-container">
+        <img src="no 7.1-ink.jpeg" alt="Akses Winbox dengan Port Baru">
+        <div class="image-caption">Mengakses MikroTik dengan Winbox menggunakan port 2025</div>
+        </div>
+        
+        <p>Pada gambar di atas, kita dapat melihat bahwa untuk terhubung ke router menggunakan Winbox dengan port yang telah diubah, kita perlu menambahkan <strong>:2025</strong> setelah alamat IP router (contoh: 192.168.88.1:2025).</p>
+        
+        <div class="tech-alert">
+            <p>Sangat penting untuk mencatat port baru yang digunakan setelah melakukan perubahan. Jika Anda lupa port yang telah diubah, Anda mungkin tidak dapat mengakses router hingga Anda melakukan reset atau mengakses melalui metode lain seperti koneksi serial.</p>
+        </div>
+
+        <h3 style="color: var(--primary-color); margin-top: 30px; margin-bottom: 15px;">7.2 Pengujian Pembatasan Akses SERVICE SSH</h3>
+        
+        <!-- Container Gambar untuk Pengujian SSH - Konfigurasi -->
+        <div class="image-container">
+        <img src="no 7.2-ink.jpeg" alt="Pembatasan Akses SSH MikroTik">
+        <div class="image-caption">Membatasi akses SSH hanya untuk alamat IP tertentu</div>
+        </div>
+        
+        <p>Pada pengujian ini, kita akan membatasi akses SSH hanya untuk jaringan 192.168.88.0/24, yang berarti hanya perangkat dalam jaringan lokal yang dapat mengakses router melalui SSH.</p>
+        
+        <p><strong>Langkah 1:</strong> Mengonfigurasi pembatasan akses SSH menggunakan CLI:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword">/ip service set</span> ssh address=192.168.88.0/24</div>
+            <div class="code-line comment"># Membatasi akses SSH hanya dari jaringan 192.168.88.0/24</div>
+            <div class="code-line"><span class="keyword">/ip service print</span> where name="ssh"</div>
+            <div class="code-line comment"># Memverifikasi perubahan pada SERVICE SSH</div>
+        </div>
+        
+        <p><strong>Langkah 2:</strong> Melakukan pengujian akses SSH dari alamat IP yang diizinkan dan yang tidak diizinkan.</p>
+        
+        <!-- Container Gambar untuk Pengujian SSH - Hasil Akses Diizinkan -->
+        <div class="image-container">
+        <img src="no 7.2-ink.jpeg" alt="Akses SSH Diizinkan">
+        <div class="image-caption">Akses SSH berhasil dari alamat IP yang diizinkan (192.168.88.10)</div>
+        </div>
+        
+
+        
+        <p>Dari hasil pengujian di atas, dapat dilihat bahwa pembatasan akses SSH berhasil diterapkan. Perangkat dengan alamat IP dalam jaringan 192.168.88.0/24 dapat terhubung melalui SSH, sementara perangkat dengan alamat IP di luar jaringan tersebut tidak dapat terhubung.</p>
+        
+        <div class="security-alert">
+            <p>Pembatasan akses berdasarkan alamat IP adalah lapisan keamanan penting, tetapi tidak boleh menjadi satu-satunya pertahanan. Kombinasikan dengan kata sandi yang kuat, otentikasi kunci publik, dan pertimbangkan untuk mengubah port default SSH untuk meningkatkan keamanan.</p>
+        </div>
+
+<h3 style="color: var(--primary-color); margin-top: 30px; margin-bottom: 15px;">7.3 Pengujian Konfigurasi SERVICE TELNET</h3>
+    
+<!-- Container Gambar untuk Pengujian Telnet - Konfigurasi -->
+<div class="image-container">
+  <img src="no 7.3-ink.jpeg" alt="Mengonfigurasi Telnet MikroTik">
+  <div class="image-caption">Mengonfigurasi SERVICE telnet dengan pembatasan akses dan port alternatif</div>
+</div>
+
+<p>Pada pengujian ini, kita akan mengonfigurasi SERVICE telnet dengan mengubah port default dan membatasi akses, kemudian menguji koneksi ke router menggunakan konfigurasi baru tersebut.</p>
+
+<p><strong>Langkah 1:</strong> Mengonfigurasi SERVICE telnet dengan CLI:</p>
+
+<div class="code-terminal">
+    <div class="code-line"><span class="keyword">/ip service print</span> where name="telnet"</div>
+    <div class="code-line comment"># Melihat konfigurasi telnet saat ini</div>
+    <div class="code-line"><span class="keyword">/ip service set</span> telnet port=8023 address=192.168.88.0/24</div>
+    <div class="code-line comment"># Mengubah port telnet dari 23 menjadi 8023 dan membatasi akses ke jaringan lokal</div>
+    <div class="code-line"><span class="keyword">/ip service print</span> where name="telnet"</div>
+    <div class="code-line comment"># Memverifikasi perubahan pada SERVICE telnet</div>
+</div>
+
+<p><strong>Langkah 2:</strong> Menguji koneksi telnet menggunakan port dan alamat yang telah dikonfigurasi.</p>
+
+<!-- Container Gambar untuk Pengujian Telnet - Akses -->
+<div class="image-container">
+  <img src="no 7.3-ink.jpeg" alt="Akses Telnet dengan Port Baru">
+  <div class="image-caption">Mengakses MikroTik dengan telnet menggunakan port 8023</div>
+</div>
+
+<p>Pada gambar di atas, kita dapat melihat contoh mengakses router melalui telnet menggunakan port alternatif 8023. Perintah yang digunakan adalah <strong>telnet 192.168.88.1 8023</strong> dari komputer dengan alamat IP dalam jaringan 192.168.88.0/24.</p>
+
+<div class="security-alert">
+    <p>Meskipun kita telah mengonfigurasi telnet dengan port alternatif dan pembatasan alamat IP, perlu diingat bahwa telnet tetap mengirimkan kredensial dan data dalam bentuk teks biasa (tidak terenkripsi). Untuk keamanan yang lebih baik, sebaiknya gunakan SSH sebagai alternatif yang lebih aman untuk akses command line jarak jauh. Contoh ini ditunjukkan hanya untuk tujuan pembelajaran.</p>
+</div>
+
+
+
+<div class="tech-alert">
+    <p>Mengubah port default dan membatasi akses berdasarkan alamat IP menambahkan lapisan keamanan dasar untuk layanan telnet. Namun, ini tidak mengatasi kelemahan fundamental telnet yaitu transmisi data yang tidak terenkripsi. Dalam lingkungan produksi, lebih baik menonaktifkan telnet sepenuhnya dan hanya menggunakan SSH.</p>
+</div>
+            <!-- Bibliography -->
+            <div class="bibliography">
+                <h3>DAFTAR PUSTAKA</h3>
+                <ul>
+                    <li><strong>MikroTik Documentation.</strong> 2023. <em>First Time Configuration</em>. <a href="https://help.mikrotik.com/docs/spaces/ROS/pages/328151/First+Time+Configuration" target="_blank">https://help.mikrotik.com/docs/spaces/ROS/pages/328151/First+Time+Configuration</a>. Diakses pada 28 Agustus 2025, pukul 08:32 WIB.</li>
+                    
+                    <li><strong>MikroTik Documentation.</strong> 2024. <em>Securing your router</em>. <a href="https://help.mikrotik.com/docs/spaces/ROS/pages/328353/Securing+your+router" target="_blank">https://help.mikrotik.com/docs/spaces/ROS/pages/328353/Securing+your+router</a>. Diakses pada 28 Agustus 2025, pukul 08:46 WIB.</li>
+                    
+                    <li><strong>NetworkTik.</strong> 2024. <em>MikroTik RouterOS Services Management: A Step-By-Step Tutorial</em>. <a href="https://networktik.com/managing-routeros-services/" target="_blank">https://networktik.com/managing-routeros-services/</a>. Diakses pada 28 Agustus 2025, pukul 09:17 WIB.</li>
+                    
+                    <li><strong>System Zone.</strong> 2021. <em>Hardening MikroTik RouterOS by Limiting Login Services</em>. <a href="https://systemzone.net/hardening-mikrotik-routeros-by-limiting-login-services/" target="_blank">https://systemzone.net/hardening-mikrotik-routeros-by-limiting-login-services/</a>. Diakses pada 28 Agustus 2025, pukul 10:00 WIB.</li>
+                    
+                    <li><strong>MikroTik Security Guide.</strong> 2024. <em>RouterOS Security Best Practices</em>. <a href="https://help.mikrotik.com/docs/display/ROS/Security" target="_blank">https://help.mikrotik.com/docs/display/ROS/Security</a>. Diakses pada 28 Agustus 2025, pukul 10:15 WIB.</li>
+                    
+                    <li><strong>RouterOS API Documentation.</strong> 2023. <em>API Reference Guide</em>. <a href="https://help.mikrotik.com/docs/display/ROS/API" target="_blank">https://help.mikrotik.com/docs/display/ROS/API</a>. Diakses pada 28 Agustus 2025, pukul 10:30 WIB.</li>
+                    
+                    <li><strong>MikroTik API Tutorial.</strong> 2022. <em>Using RouterOS API for Network Automation</em>. <a href="https://wiki.mikrotik.com/wiki/Manual:API" target="_blank">https://wiki.mikrotik.com/wiki/Manual:API</a>. Diakses pada 28 Agustus 2025, pukul 10:45 WIB.</li>
+                    
+                    <li><strong>RouterOS WebFig Guide.</strong> 2023. <em>Web-based Management Interface</em>. <a href="https://help.mikrotik.com/docs/display/ROS/WebFig" target="_blank">https://help.mikrotik.com/docs/display/ROS/WebFig</a>. Diakses pada 28 Agustus 2025, pukul 11:00 WIB.</li>
+                    
+                    <li><strong>MikroTik Web Access Security.</strong> 2022. <em>Securing Web Access to RouterOS</em>. <a href="https://wiki.mikrotik.com/wiki/Manual:Securing_WebFig" target="_blank">https://wiki.mikrotik.com/wiki/Manual:Securing_WebFig</a>. Diakses pada 28 Agustus 2025, pukul 11:15 WIB.</li>
+                    
+                    <li><strong>MikroTik TLS Configuration.</strong> 2023. <em>TLS Protocol Settings for RouterOS Services</em>. <a href="https://help.mikrotik.com/docs/display/ROS/TLS" target="_blank">https://help.mikrotik.com/docs/display/ROS/TLS</a>. Diakses pada 28 Agustus 2025, pukul 11:30 WIB.</li>
+                    
+                    <li><strong>Winbox Security Guide.</strong> 2023. <em>Securing Winbox Access</em>. <a href="https://help.mikrotik.com/docs/display/ROS/Winbox" target="_blank">https://help.mikrotik.com/docs/display/ROS/Winbox</a>. Diakses pada 28 Agustus 2025, pukul 11:45 WIB.</li>
+                    
+                    <li><strong>RouterOS Mac Access Guide.</strong> 2022. <em>MAC-based Access Configuration</em>. <a href="https://wiki.mikrotik.com/wiki/Manual:MAC_access" target="_blank">https://wiki.mikrotik.com/wiki/Manual:MAC_access</a>. Diakses pada 28 Agustus 2025, pukul 12:00 WIB.</li>
+                    
+                    <li><strong>MikroTik Security Recommendations.</strong> 2023. <em>RouterOS Security Hardening</em>. <a href="https://wiki.mikrotik.com/wiki/Manual:Securing_Your_Router" target="_blank">https://wiki.mikrotik.com/wiki/Manual:Securing_Your_Router</a>. Diakses pada 28 Agustus 2025, pukul 12:15 WIB.</li>
+                    
+                    <li><strong>Winbox Advanced Configuration.</strong> 2024. <em>Advanced Winbox Usage and Security</em>. <a href="https://help.mikrotik.com/docs/display/ROS/Winbox+Advanced" target="_blank">https://help.mikrotik.com/docs/display/ROS/Winbox+Advanced</a>. Diakses pada 28 Agustus 2025, pukul 12:30 WIB.</li>
+                    
+                    <li><strong>RouterOS CLI Access Guide.</strong> 2023. <em>Command Line Interface Access Methods</em>. <a href="https://help.mikrotik.com/docs/display/ROS/Console" target="_blank">https://help.mikrotik.com/docs/display/ROS/Console</a>. Diakses pada 28 Agustus 2025, pukul 12:45 WIB.</li>
+                    
+                    <li><strong>Network Security Best Practices.</strong> 2023. <em>Securing Network Devices</em>. <a href="https://www.networksecurity.org/best-practices.html" target="_blank">https://www.networksecurity.org/best-practices.html</a>. Diakses pada 28 Agustus 2025, pukul 13:00 WIB.</li>
+                    
+                    <li><strong>SSH Key Authentication Guide.</strong> 2022. <em>Using SSH Keys with RouterOS</em>. <a href="https://wiki.mikrotik.com/wiki/Manual:SSH_keys" target="_blank">https://wiki.mikrotik.com/wiki/Manual:SSH_keys</a>. Diakses pada 28 Agustus 2025, pukul 13:15 WIB.</li>
+                    
+                    <li><strong>MikroTik CLI Scripting.</strong> 2023. <em>RouterOS Command Line Scripting</em>. <a href="https://help.mikrotik.com/docs/display/ROS/Scripting" target="_blank">https://help.mikrotik.com/docs/display/ROS/Scripting</a>. Diakses pada 28 Agustus 2025, pukul 13:30 WIB.</li>
+                    
+                    <li><strong>Network Hardening Best Practices.</strong> 2023. <em>Securing Network Infrastructure</em>. <a href="https://www.networkhardening.com/best-practices.html" target="_blank">https://www.networkhardening.com/best-practices.html</a>. Diakses pada 28 Agustus 2025, pukul 13:45 WIB.</li>
+                    
+                    <li><strong>MikroTik User Management.</strong> 2023. <em>User and Permission Management</em>. <a href="https://help.mikrotik.com/docs/display/ROS/User+Management" target="_blank">https://help.mikrotik.com/docs/display/ROS/User+Management</a>. Diakses pada 28 Agustus 2025, pukul 14:00 WIB.</li>
+                    
+                    <li><strong>Remote Access Security.</strong> 2024. <em>Secure Remote Access Methods</em>. <a href="https://www.remoteaccess-security.org/mikrotik.html" target="_blank">https://www.remoteaccess-security.org/mikrotik.html</a>. Diakses pada 28 Agustus 2025, pukul 14:15 WIB.</li>
+                    
+                    <li><strong>MikroTik Configuration Backup.</strong> 2023. <em>Configuration Backup and Recovery</em>. <a href="https://help.mikrotik.com/docs/display/ROS/Backup" target="_blank">https://help.mikrotik.com/docs/display/ROS/Backup</a>. Diakses pada 28 Agustus 2025, pukul 14:30 WIB.</li>
+                </ul>
+            </div>
+        </div>
+
+        <script>
+            // Script untuk loading screen
+            window.addEventListener('load', function() {
+                // Hilangkan loading screen setelah halaman selesai dimuat
+                const preloader = document.getElementById('preloader');
+                const body = document.body;
+                
+                // Tunggu sedikit untuk efek visual yang lebih baik
+                setTimeout(function() {
+                    preloader.style.opacity = '0';
+                    preloader.style.visibility = 'hidden';
+                    body.classList.remove('loading');
+                    
+                    // Hapus preloader dari DOM setelah animasi selesai
+                    setTimeout(function() {
+                        preloader.remove();
+                    }, 800);
+                }, 1500); // Menunggu 1.5 detik untuk tampilan loading screen yang lebih baik
+            });
+
+            // Tech particles animation
+            function createTechParticles() {
+                const particlesContainer = document.getElementById('techParticles');
+                const particleCount = 50;
+
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = Math.random() * 100 + 'vw';
+                    particle.style.animationDelay = Math.random() * 20 + 's';
+                    particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                    
+                    particlesContainer.appendChild(particle);
+                }
+            }
+
+            // Scroll progress
+            function updateScrollProgress() {
+                const scrollTop = document.documentElement.scrollTop;
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrollPercent = (scrollTop / scrollHeight) * 100;
+                document.getElementById('scrollProgress').style.width = scrollPercent + '%';
+            }
+
+            // Typing effect for code lines
+            function typeText(element, text, speed = 30) {
+                return new Promise(resolve => {
+                    element.classList.add('typing');
+                    let i = 0;
+                    element.innerHTML = '';
+                    
+                    function type() {
+                        if (i < text.length) {
+                            element.innerHTML = text.slice(0, i + 1);
+                            i++;
+                            setTimeout(type, speed);
+                        } else {
+                            element.classList.remove('typing');
+                            element.classList.add('typed');
+                            resolve();
+                        }
+                    }
+                    type();
+                });
+            }
+
+            // Animate code blocks with typing effect
+            function animateCodeBlocks() {
+                const codeTerminals = document.querySelectorAll('.code-terminal');
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const codeLines = entry.target.querySelectorAll('.code-line');
+                            let delay = 0;
+                            
+                            codeLines.forEach((line, index) => {
+                                const originalText = line.innerHTML;
+                                setTimeout(async () => {
+                                    await typeText(line, originalText, 20);
+                                }, delay);
+                                delay += 500; // 500ms delay between lines
+                            });
+                            
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.3 });
+
+                codeTerminals.forEach(terminal => {
+                    observer.observe(terminal);
+                });
+            }
+
+            // Fade in animation on scroll
+            function animateOnScroll() {
+                const fadeElements = document.querySelectorAll('.fade-in');
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.style.animation = 'fadeInUp 0.8s ease-out forwards';
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.1 });
+
+                fadeElements.forEach(element => {
+                    observer.observe(element);
+                });
+            }
+
+            // Code block hover effects
+            function addCodeEffects() {
+                const codeLines = document.querySelectorAll('.code-line');
+                codeLines.forEach(line => {
+                    line.addEventListener('mouseenter', () => {
+                        if (line.classList.contains('typed')) {
+                            line.style.transform = 'translateX(5px)';
+                            line.style.background = 'rgba(37, 99, 235, 0.1)';
+                        }
+                    });
+                    line.addEventListener('mouseleave', () => {
+                        line.style.transform = 'translateX(0)';
+                        line.style.background = 'transparent';
+                    });
+                });
+            }
+
+            // Section hover effects
+            function addSectionEffects() {
+                const sections = document.querySelectorAll('.section');
+                sections.forEach(section => {
+                    section.addEventListener('mouseenter', () => {
+                        section.style.transform = 'translateY(-8px)';
+                    });
+                    section.addEventListener('mouseleave', () => {
+                        section.style.transform = 'translateY(0)';
+                    });
+                });
+            }
+
+            // Initialize everything
+            document.addEventListener('DOMContentLoaded', () => {
+                createTechParticles();
+                animateOnScroll();
+                animateCodeBlocks();
+                addCodeEffects();
+                addSectionEffects();
+                
+                // Scroll events
+                window.addEventListener('scroll', updateScrollProgress);
+                
+                // Smooth scrolling for better UX
+                document.documentElement.style.scrollBehavior = 'smooth';
+            });
+
+            // Add responsive particle count
+            function adjustParticleCount() {
+                const width = window.innerWidth;
+                const particlesContainer = document.getElementById('techParticles');
+                const currentParticles = particlesContainer.children.length;
+                const targetParticles = width < 768 ? 20 : width < 1200 ? 35 : 50;
+                
+                if (currentParticles !== targetParticles) {
+                    particlesContainer.innerHTML = '';
+                    for (let i = 0; i < targetParticles; i++) {
+                        const particle = document.createElement('div');
+                        particle.className = 'particle';
+                        particle.style.left = Math.random() * 100 + 'vw';
+                        particle.style.animationDelay = Math.random() * 20 + 's';
+                        particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                        particlesContainer.appendChild(particle);
+                    }
+                }
+            }
+
+            window.addEventListener('resize', adjustParticleCount);
+        </script>
+    </body>
+    </html>
